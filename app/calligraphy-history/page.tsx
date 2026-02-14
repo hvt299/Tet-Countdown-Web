@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
-import FallingFlowers from '@/components/FallingFlowers';
 import { ArrowLeft, ScrollText, Share2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CalligraphyHistoryPage() {
     const router = useRouter();
@@ -45,8 +45,8 @@ export default function CalligraphyHistoryPage() {
 
     const handleShare = async (item: any) => {
         const websiteUrl = window.location.origin;
-        const shareText = `🧧 Khai bút đầu Xuân, Ông Đồ tặng mình chữ "${item.givenWord}" (${item.vietnameseMeaning})\n\n📜 Thơ tặng:\n${item.poem}\n\nCùng lên Tết Countdown xin chữ Ông Đồ nhé!\n👉 ${websiteUrl}`;
-        
+        const shareText = `🧧 Khai bút đầu Xuân, Ông Đồ tặng mình chữ "${item.givenWord}" (${item.vietnameseMeaning})\n\n📜 Thơ tặng:\n${item.poem}\n\nCùng xem chi tiết bức thư pháp tại đây nhé:\n👉 ${websiteUrl}/chu-ong-do/${item._id}`;
+
         if (navigator.share) {
             try {
                 await navigator.share({
@@ -69,7 +69,7 @@ export default function CalligraphyHistoryPage() {
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/90 via-black/70 to-red-950/90 fixed"></div>
 
-            <div className="relative z-20 w-full max-w-5xl mx-auto pt-10">
+            <div className="relative z-20 w-full max-w-5xl mx-auto">
                 {/* HEADER */}
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-red-800/50">
                     <button
@@ -122,6 +122,13 @@ export default function CalligraphyHistoryPage() {
                                         </p>
                                     </div>
                                 </div>
+
+                                <Link
+                                    href={`/chu-ong-do/${item._id}`}
+                                    className="mt-5 w-full py-2.5 bg-red-900/40 hover:bg-red-800/60 text-yellow-500 border border-yellow-500/30 rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
+                                >
+                                    <ScrollText size={18} /> Thưởng lãm thư pháp
+                                </Link>
 
                                 <button
                                     onClick={() => handleShare(item)}

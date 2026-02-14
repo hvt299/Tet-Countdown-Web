@@ -5,7 +5,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import axios from 'axios';
-import FallingFlowers from '@/components/FallingFlowers';
 import { ArrowLeft } from 'lucide-react';
 
 function ResetPasswordContent() {

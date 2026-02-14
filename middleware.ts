@@ -36,6 +36,7 @@ export const config = {
         '/reset-password',
         '/auth/verify',
         '/xin-chu',
+        '/chu-ong-do',
         '/calligraphy-history',
         '/hai-loc',
         '/tro-choi',

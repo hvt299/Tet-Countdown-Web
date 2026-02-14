@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import axios from 'axios';
-import FallingFlowers from '@/components/FallingFlowers';
 
 function VerifyContent() {
     const searchParams = useSearchParams();

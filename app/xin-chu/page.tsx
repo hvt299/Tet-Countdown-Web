@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
-import FallingFlowers from '@/components/FallingFlowers';
 import { ArrowLeft, PenTool, ScrollText, Sparkles, History } from 'lucide-react';
+import { checkTetState } from '@/utils/tetHelper';
 
 export default function XinChuPage() {
     const router = useRouter();
@@ -17,9 +17,18 @@ export default function XinChuPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [result, setResult] = useState<any>(null);
+    const [isFestivalTime, setIsFestivalTime] = useState(false);
 
     // Lấy tên mặc định từ token nếu có
     useEffect(() => {
+        const currentState = checkTetState();
+        const now = new Date().getTime();
+        const tetTime = currentState.targetDate;
+        const endOfMung10 = tetTime + (10 * 24 * 60 * 60 * 1000);
+
+        const isFestival = now >= tetTime && now <= endOfMung10;
+        setIsFestivalTime(isFestival);
+
         const getCookie = (name: string) => {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
@@ -139,40 +148,51 @@ export default function XinChuPage() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div>
-                                <label className="block text-yellow-500 text-sm font-bold mb-2">Tên người nhận chữ</label>
-                                <input
-                                    type="text" required maxLength={50}
-                                    className="w-full px-4 py-3 text-lg rounded-xl bg-red-950/50 border-2 border-red-800/50 text-white focus:outline-none focus:border-yellow-500 transition-colors"
-                                    placeholder="Tên của bạn hoặc người thân..."
-                                    value={formData.userName}
-                                    onChange={(e) => setFormData({ ...formData, userName: e.target.value })}
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-yellow-500 text-sm font-bold mb-2">Lời cầu nguyện đầu năm</label>
-                                <textarea
-                                    required maxLength={200} rows={3}
-                                    className="w-full px-4 py-3 text-base rounded-xl bg-red-950/50 border-2 border-red-800/50 text-white focus:outline-none focus:border-yellow-500 transition-colors resize-none placeholder-red-300/30"
-                                    placeholder="Ví dụ: Cầu cho gia đình bình an, công việc năm nay hanh thông thuận lợi..."
-                                    value={formData.userWish}
-                                    onChange={(e) => setFormData({ ...formData, userWish: e.target.value })}
-                                />
-                                <div className="text-right text-xs text-red-400 mt-1">
-                                    {formData.userWish.length}/200
+                        {isFestivalTime ? (
+                            <form onSubmit={handleSubmit} className="space-y-5">
+                                <div>
+                                    <label className="block text-yellow-500 text-sm font-bold mb-2">Tên người nhận chữ</label>
+                                    <input
+                                        type="text" required maxLength={50}
+                                        className="w-full px-4 py-3 text-lg rounded-xl bg-red-950/50 border-2 border-red-800/50 text-white focus:outline-none focus:border-yellow-500 transition-colors"
+                                        placeholder="Tên của bạn hoặc người thân..."
+                                        value={formData.userName}
+                                        onChange={(e) => setFormData({ ...formData, userName: e.target.value })}
+                                    />
                                 </div>
-                            </div>
 
-                            <button
-                                type="submit"
-                                className="w-full py-4 mt-2 text-xl bg-linear-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-red-900 font-bold rounded-xl shadow-[0_0_20px_rgba(234,179,8,0.3)] transform transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
-                            >
-                                <Sparkles size={24} />
-                                Xin Chữ Ngay
-                            </button>
-                        </form>
+                                <div>
+                                    <label className="block text-yellow-500 text-sm font-bold mb-2">Lời cầu nguyện đầu năm</label>
+                                    <textarea
+                                        required maxLength={200} rows={3}
+                                        className="w-full px-4 py-3 text-base rounded-xl bg-red-950/50 border-2 border-red-800/50 text-white focus:outline-none focus:border-yellow-500 transition-colors resize-none placeholder-red-300/30"
+                                        placeholder="Ví dụ: Cầu cho gia đình bình an, công việc năm nay hanh thông thuận lợi..."
+                                        value={formData.userWish}
+                                        onChange={(e) => setFormData({ ...formData, userWish: e.target.value })}
+                                    />
+                                    <div className="text-right text-xs text-red-400 mt-1">
+                                        {formData.userWish.length}/200
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full py-4 mt-2 text-xl bg-linear-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-red-900 font-bold rounded-xl shadow-[0_0_20px_rgba(234,179,8,0.3)] transform transition-transform hover:scale-[1.02] flex items-center justify-center gap-2"
+                                >
+                                    <Sparkles size={24} />
+                                    Xin Chữ Ngay
+                                </button>
+                            </form>
+                        ) : (
+                            <div className="mt-8 p-6 bg-red-950/60 border border-yellow-500/30 rounded-2xl text-center shadow-inner">
+                                <div className="text-4xl mb-3 opacity-60">🔒</div>
+                                <h3 className="text-xl font-bold text-yellow-400 mb-2">Chưa đến giờ khai bút</h3>
+                                <p className="text-red-200 text-sm">
+                                    Ông Đồ chỉ mở cửa cho chữ từ lúc Giao Thừa đến hết Mùng 10 Âm lịch.<br />
+                                    Quý khách vui lòng xem lại <strong className="text-yellow-500">Lịch sử xin chữ</strong> ở góc trên nhé!
+                                </p>
+                            </div>
+                        )}
                     </div>
                 )}
 

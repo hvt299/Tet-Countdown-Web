@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import TetCountdown from '@/components/TetCountdown';
 import { X, Sparkles, LogOut, Settings } from 'lucide-react';
+import { checkTetState } from '@/utils/tetHelper';
 
 const parseJwt = (token: string) => {
   try {
@@ -20,13 +21,35 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [isFestivalTime, setIsFestivalTime] = useState(false);
+  const [tetMessage, setTetMessage] = useState('');
 
   useEffect(() => {
+    const currentState = checkTetState();
+    const now = new Date().getTime();
+    const tetTime = currentState.targetDate;
+    const endOfMung10 = tetTime + (10 * 24 * 60 * 60 * 1000);
+
+    const isFestival = now >= tetTime && now <= endOfMung10;
+    setIsFestivalTime(isFestival);
+
+    if (now < tetTime) {
+      setTetMessage("Các trò chơi và hoạt động xin chữ, hái lộc sẽ chính thức mở vào lúc Giao Thừa và đóng lại vào cuối Mùng 10. Bạn hãy quay lại nhé!");
+    } else if (now > endOfMung10) {
+      setTetMessage("Cảm ơn bạn đã tham gia chơi các trò chơi, khai bút và hái lộc. Hẹn gặp lại bạn vào mùa Tết năm sau nhé!");
+    }
+
     const fetchRecentCalligraphies = async () => {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const response = await axios.get(`${API_URL}/calligraphy/recent`);
-        setCalligraphies(response.data);
+
+        const filteredData = response.data.filter((item: any) => {
+          const itemTime = new Date(item.createdAt).getTime();
+          return itemTime >= tetTime && itemTime <= endOfMung10;
+        });
+
+        setCalligraphies(filteredData);
       } catch (error) {
         console.error('Lỗi lấy Bảng vàng:', error);
       }
@@ -163,65 +186,109 @@ export default function Home() {
           {/* CÁC TÍNH NĂNG & BẢNG VÀNG */}
           {isLoggedIn && (
             <>
-              {/* CỘT TRÁI: BẢNG VÀNG */}
-              <div className="lg:col-span-3 lg:col-start-1 order-3 lg:order-1 w-full">
-                <div className="w-full bg-black/40 backdrop-blur-md border border-red-500/30 rounded-2xl p-5 shadow-2xl">
-                  <h2 className="text-xl font-bold text-yellow-400 mb-4 flex items-center justify-center gap-2 font-serif">
-                    <span>📜</span> Bảng Vàng Xin Chữ
-                  </h2>
-                  <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1 custom-scrollbar">
-                    {calligraphies.map((item: any) => (
-                      <div key={item._id} className="bg-red-950/40 p-3 rounded-xl border border-red-800/50 flex items-center gap-3 hover:bg-red-900/60 transition-colors">
-                        <div className="shrink-0 w-12 h-12 bg-linear-to-br from-yellow-400 to-yellow-600 text-red-900 flex items-center justify-center rounded-full text-2xl font-bold font-serif shadow-inner border border-yellow-300">
-                          {item.givenWord}
-                        </div>
-                        <div className="overflow-hidden">
-                          <p className="font-bold text-sm text-white truncate">
-                            {item.user?.fullName || item.userName}
-                          </p>
-                          <p className="text-xs text-red-200 line-clamp-2 italic leading-tight">"{item.poem}"</p>
+              {isFestivalTime ? (
+                <>
+                  {/* CỘT TRÁI: BẢNG VÀNG */}
+                  <div className="lg:col-span-3 lg:col-start-1 order-3 lg:order-1 w-full">
+                    <div className="w-full bg-black/40 backdrop-blur-md border border-red-500/30 rounded-2xl p-5 shadow-2xl">
+                      <h2 className="text-xl font-bold text-yellow-400 mb-4 flex items-center justify-center gap-2 font-serif">
+                        <span>📜</span> Bảng Vàng Xin Chữ
+                      </h2>
+                      <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1 custom-scrollbar">
+                        {calligraphies.map((item: any) => (
+                          <div key={item._id} className="bg-red-950/40 p-3 rounded-xl border border-red-800/50 flex items-center gap-3 hover:bg-red-900/60 transition-colors">
+                            <div className="shrink-0 w-12 h-12 bg-linear-to-br from-yellow-400 to-yellow-600 text-red-900 flex items-center justify-center rounded-full text-2xl font-bold font-serif shadow-inner border border-yellow-300">
+                              {item.givenWord}
+                            </div>
+                            <div className="overflow-hidden">
+                              <p className="font-bold text-sm text-white truncate">
+                                {item.user?.fullName || item.userName}
+                              </p>
+                              <p className="text-xs text-red-200 line-clamp-2 italic leading-tight">"{item.poem}"</p>
+                            </div>
+                          </div>
+                        ))}
+                        {calligraphies.length === 0 && (
+                          <p className="text-center text-sm text-red-300/60 italic py-4">Chưa có ai xin chữ. Hãy là người đầu tiên!</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CỘT PHẢI: 3 TÍNH NĂNG */}
+                  <div className="lg:col-span-3 lg:col-start-10 order-2 lg:order-3 w-full flex flex-col gap-4">
+                    <Link href="/xin-chu" className="group block">
+                      <div className="bg-red-900/60 backdrop-blur-sm border-2 border-yellow-500/50 hover:border-yellow-400 rounded-xl p-4 flex items-center gap-4 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-red-800/80">
+                        <div className="text-4xl group-hover:scale-110 transition-transform">🧧</div>
+                        <div>
+                          <h3 className="text-lg font-bold text-yellow-400">Xin Chữ Đầu Năm</h3>
+                          <p className="text-xs text-red-200">Ông Đồ AI tặng chữ</p>
                         </div>
                       </div>
-                    ))}
-                    {calligraphies.length === 0 && (
-                      <p className="text-center text-sm text-red-300/60 italic py-4">Chưa có ai xin chữ. Hãy là người đầu tiên!</p>
-                    )}
-                  </div>
-                </div>
-              </div>
+                    </Link>
 
-              {/* CỘT PHẢI: 3 TÍNH NĂNG */}
-              <div className="lg:col-span-3 lg:col-start-10 order-2 lg:order-3 w-full flex flex-col gap-4">
-                <Link href="/xin-chu" className="group block">
-                  <div className="bg-red-900/60 backdrop-blur-sm border-2 border-yellow-500/50 hover:border-yellow-400 rounded-xl p-4 flex items-center gap-4 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-red-800/80">
-                    <div className="text-4xl group-hover:scale-110 transition-transform">🧧</div>
-                    <div>
-                      <h3 className="text-lg font-bold text-yellow-400">Xin Chữ Đầu Năm</h3>
-                      <p className="text-xs text-red-200">Ông Đồ AI tặng chữ</p>
+                    <Link href="/hai-loc" className="group block">
+                      <div className="bg-red-900/60 backdrop-blur-sm border-2 border-yellow-500/50 hover:border-yellow-400 rounded-xl p-4 flex items-center gap-4 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-green-800/80">
+                        <div className="text-4xl group-hover:scale-110 transition-transform">🌳</div>
+                        <div>
+                          <h3 className="text-lg font-bold text-yellow-400">Hái Lộc Đầu Xuân</h3>
+                          <p className="text-xs text-red-200">Rút quẻ rước tài lộc</p>
+                        </div>
+                      </div>
+                    </Link>
+
+                    <Link href="/tro-choi" className="group block">
+                      <div className="bg-red-900/60 backdrop-blur-sm border-2 border-yellow-500/50 hover:border-yellow-400 rounded-xl p-4 flex items-center gap-4 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-orange-800/80">
+                        <div className="text-4xl group-hover:scale-110 transition-transform">🎲</div>
+                        <div>
+                          <h3 className="text-lg font-bold text-yellow-400">Trò Chơi Dân Gian</h3>
+                          <p className="text-xs text-red-200">Bầu cua, Lô tô</p>
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* CỘT TRÁI: THÔNG BÁO ĐÓNG CỬA (Ở VỊ TRÍ BẢNG VÀNG) */}
+                  <div className="lg:col-span-3 lg:col-start-1 order-3 lg:order-1 w-full flex flex-col items-center justify-center text-center p-6 bg-black/40 backdrop-blur-md rounded-2xl border border-yellow-500/30 shadow-2xl min-h-75">
+                    <div className="text-5xl mb-3 opacity-80 animate-pulse">🌸</div>
+                    <h2 className="text-xl font-bold text-yellow-400 font-serif mb-3 leading-snug">
+                      Hội Xuân Khép Lại
+                    </h2>
+                    <p className="text-red-200 text-sm leading-relaxed">
+                      {tetMessage}
+                    </p>
+                  </div>
+
+                  {/* CỘT PHẢI: 3 TÍNH NĂNG (TRẠNG THÁI DISABLED) */}
+                  <div className="lg:col-span-3 lg:col-start-10 order-2 lg:order-3 w-full flex flex-col gap-4">
+                    <div className="bg-red-950/40 backdrop-blur-sm border-2 border-yellow-500/20 rounded-xl p-4 flex items-center gap-4 shadow-inner opacity-50 grayscale cursor-not-allowed">
+                      <div className="text-4xl">🧧</div>
+                      <div>
+                        <h3 className="text-lg font-bold text-yellow-400/50">Xin Chữ Đầu Năm</h3>
+                        <p className="text-xs text-red-200/50">Chưa mở hội</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-red-950/40 backdrop-blur-sm border-2 border-yellow-500/20 rounded-xl p-4 flex items-center gap-4 shadow-inner opacity-50 grayscale cursor-not-allowed">
+                      <div className="text-4xl">🌳</div>
+                      <div>
+                        <h3 className="text-lg font-bold text-yellow-400/50">Hái Lộc Đầu Xuân</h3>
+                        <p className="text-xs text-red-200/50">Chưa mở hội</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-red-950/40 backdrop-blur-sm border-2 border-yellow-500/20 rounded-xl p-4 flex items-center gap-4 shadow-inner opacity-50 grayscale cursor-not-allowed">
+                      <div className="text-4xl">🎲</div>
+                      <div>
+                        <h3 className="text-lg font-bold text-yellow-400/50">Trò Chơi Dân Gian</h3>
+                        <p className="text-xs text-red-200/50">Chưa mở hội</p>
+                      </div>
                     </div>
                   </div>
-                </Link>
-
-                <Link href="/hai-loc" className="group block">
-                  <div className="bg-red-900/60 backdrop-blur-sm border-2 border-yellow-500/50 hover:border-yellow-400 rounded-xl p-4 flex items-center gap-4 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-green-800/80">
-                    <div className="text-4xl group-hover:scale-110 transition-transform">🌳</div>
-                    <div>
-                      <h3 className="text-lg font-bold text-yellow-400">Hái Lộc Đầu Xuân</h3>
-                      <p className="text-xs text-red-200">Rút quẻ rước tài lộc</p>
-                    </div>
-                  </div>
-                </Link>
-
-                <Link href="/tro-choi" className="group block">
-                  <div className="bg-red-900/60 backdrop-blur-sm border-2 border-yellow-500/50 hover:border-yellow-400 rounded-xl p-4 flex items-center gap-4 shadow-lg transform transition-all duration-300 hover:-translate-y-1 hover:bg-orange-800/80">
-                    <div className="text-4xl group-hover:scale-110 transition-transform">🎲</div>
-                    <div>
-                      <h3 className="text-lg font-bold text-yellow-400">Trò Chơi Dân Gian</h3>
-                      <p className="text-xs text-red-200">Bầu cua, Lô tô</p>
-                    </div>
-                  </div>
-                </Link>
-              </div>
+                </>
+              )}
             </>
           )}
 
@@ -231,6 +298,6 @@ export default function Home() {
       <footer className="relative z-20 text-white/50 text-xs md:text-sm w-full text-center pb-4 pt-4">
         <p>© {new Date().getFullYear()} Developed by Mr.T • Happy Lunar New Year</p>
       </footer>
-    </main>
+    </main >
   );
 }
