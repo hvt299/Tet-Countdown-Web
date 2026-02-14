@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import TetSound from "@/components/TetSound";
 
 const inter = Inter({ subsets: ["latin"] });
 const playfair = Playfair_Display({ subsets: ["latin", "vietnamese"], variable: '--font-serif' });
@@ -17,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
-      <body className={`${inter.className} ${playfair.variable}`}>{children}</body>
+      <body className={`${inter.className} ${playfair.variable}`}>
+        <TetSound />
+        {children}
+      </body>
     </html>
   );
 }

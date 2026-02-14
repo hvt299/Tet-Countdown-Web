@@ -4,8 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import TetCountdown from '@/components/TetCountdown';
-import TetSound from '@/components/TetSound';
-import { X, Sparkles, LogOut } from 'lucide-react';
+import { X, Sparkles, LogOut, Settings } from 'lucide-react';
 
 const mockRecentCalligraphies = [
   { id: 1, userName: 'Nguyễn Văn A', word: 'Tâm', poem: 'Tâm sáng như gương, hướng thiện đời bình an.' },
@@ -66,39 +65,55 @@ export default function Home() {
       </div>
       <div className="inset-0 z-10 bg-linear-to-b from-red-900/70 via-black/40 to-red-900/80 fixed"></div>
 
-      <TetSound />
-
       {/* --- HEADER NAVBAR --- */}
       <header className="fixed top-0 left-0 w-full py-3 px-4 md:px-6 z-50 flex justify-between items-center bg-red-950/30 backdrop-blur-md border-b border-yellow-500/20 shadow-sm transition-all">
+
+        {/* LOGO: Ẩn chữ trên Mobile, chỉ hiện icon */}
         <Link href="/" className="flex items-center gap-2 text-xl md:text-2xl font-bold text-yellow-400 font-serif drop-shadow-md hover:scale-105 transition-transform">
-          <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-yellow-400" />
-          Tết Countdown
+          <Sparkles className="w-6 h-6 text-yellow-400 shrink-0" />
+          <span className="hidden sm:inline">Tết Countdown</span>
         </Link>
 
+        {/* USER INFO */}
         {isLoggedIn ? (
-          <div className="relative group">
-            <div className="flex items-center gap-2 md:gap-3 bg-red-950/40 backdrop-blur-sm border border-yellow-500/30 px-3 py-1.5 md:px-4 md:py-1.5 rounded-full shadow-sm cursor-pointer hover:border-yellow-400 transition-colors">
-              <span className="text-yellow-400 font-medium text-sm hidden md:block">
+          <div className="flex items-center gap-1 md:gap-2 bg-black/40 backdrop-blur-md pl-1 pr-2 py-1 rounded-full border border-yellow-500/30 shadow-lg">
+
+            {/* Nhóm Avatar + Tên + Settings (Bấm vào để qua trang Cài đặt) */}
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 md:gap-3 px-2 py-1 rounded-full hover:bg-red-900/50 transition group"
+              title="Cài đặt tài khoản"
+            >
+              {/* Avatar */}
+              {userInfo?.avatar ? (
+                <img src={userInfo.avatar} alt="Avatar" className="w-8 h-8 md:w-9 md:h-9 rounded-full border border-yellow-500/50 object-cover shrink-0" />
+              ) : (
+                <div className="w-8 h-8 md:w-9 md:h-9 bg-linear-to-br from-yellow-400 to-yellow-600 text-red-900 flex items-center justify-center rounded-full font-bold shadow-inner shrink-0">
+                  <span className="text-sm uppercase">{userInfo?.fullName?.charAt(0) || userInfo?.username?.charAt(0) || 'U'}</span>
+                </div>
+              )}
+
+              {/* Tên */}
+              <span className="text-white font-medium text-sm md:text-base max-w-25 truncate md:max-w-37.5 group-hover:text-yellow-400 transition">
                 {userInfo?.fullName || userInfo?.username}
               </span>
-              <div className="w-7 h-7 md:w-8 md:h-8 bg-linear-to-br from-yellow-400 to-yellow-600 text-red-900 flex items-center justify-center rounded-full font-bold shadow-inner overflow-hidden border border-yellow-300">
-                {userInfo?.avatar ? (
-                  <img src={userInfo.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-base uppercase">{userInfo?.fullName?.charAt(0) || userInfo?.username?.charAt(0) || 'U'}</span>
-                )}
-              </div>
-            </div>
 
-            {/* DROPDOWN MENU */}
-            <div className="absolute right-0 mt-2 w-48 bg-red-950/95 backdrop-blur-xl border border-red-800 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 overflow-hidden">
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-3 text-red-100 hover:text-yellow-400 hover:bg-red-900/50 transition-colors flex items-center gap-2 font-medium text-sm md:text-base"
-              >
-                <LogOut size={18} /> Đăng Xuất
-              </button>
-            </div>
+              {/* Icon Settings */}
+              <Settings className="w-4 h-4 text-white/50 group-hover:text-yellow-400 transition" />
+            </Link>
+
+            {/* Vách ngăn dọc */}
+            <div className="h-6 w-px bg-white/20 mx-1"></div>
+
+            {/* Nút Đăng xuất */}
+            <button
+              onClick={handleLogout}
+              className="p-2 text-white/70 hover:text-red-400 hover:bg-red-900/50 rounded-full transition focus:outline-none"
+              title="Đăng xuất"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+
           </div>
         ) : (
           <Link href="/login" className="bg-linear-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-red-900 font-bold px-5 py-1.5 md:px-6 md:py-2 rounded-full shadow-lg transform transition-transform hover:scale-105 text-sm md:text-base">
@@ -132,11 +147,7 @@ export default function Home() {
       )}
 
       {/* --- NỘI DUNG CHÍNH --- */}
-      {/* 1. Thêm flex-grow flex flex-col justify-center để luôn căn giữa tâm màn hình */}
-      {/* 2. Dùng pt-24 (padding top) để không bao giờ bị Header đè lên nội dung */}
       <div className="relative z-20 w-full max-w-7xl px-4 grow flex flex-col justify-center pt-24 pb-12">
-
-        {/* Đổi items-start thành items-center để cột trái và cột phải tự căn giữa theo chiều cao của đồng hồ ở cột giữa */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center w-full">
 
           {/* CỘT GIỮA: COUNTDOWN */}
