@@ -130,8 +130,6 @@ export default function ProfilePage() {
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
-            <FallingFlowers />
-
             {/* Container Chính (Rộng hơn form Login để chia 2 cột) */}
             <div className="relative z-20 w-full max-w-5xl bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-3xl shadow-2xl p-6 md:p-8">
 

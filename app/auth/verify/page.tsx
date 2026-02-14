@@ -87,9 +87,6 @@ export default function VerifyPage() {
             </div>
             <div className="absolute inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90"></div>
 
-            {/* HOA RƠI LÃNG MẠN */}
-            <FallingFlowers />
-
             <Suspense fallback={
                 <div className="relative z-20 text-yellow-400 text-xl font-bold">Đang tải...</div>
             }>

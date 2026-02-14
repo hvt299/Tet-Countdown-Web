@@ -14,7 +14,8 @@ export function middleware(request: NextRequest) {
         pathname.startsWith('/xin-chu') ||
         pathname.startsWith('/hai-loc') ||
         pathname.startsWith('/tro-choi') ||
-        pathname.startsWith('/profile');
+        pathname.startsWith('/profile') ||
+        pathname.startsWith('/calligraphy-history');
 
     if (isAuthRoute && token) {
         return NextResponse.redirect(new URL('/', request.url));
@@ -35,6 +36,7 @@ export const config = {
         '/reset-password',
         '/auth/verify',
         '/xin-chu',
+        '/calligraphy-history',
         '/hai-loc',
         '/tro-choi',
         '/profile'

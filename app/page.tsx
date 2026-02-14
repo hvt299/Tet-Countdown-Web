@@ -3,14 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import TetCountdown from '@/components/TetCountdown';
 import { X, Sparkles, LogOut, Settings } from 'lucide-react';
-
-const mockRecentCalligraphies = [
-  { id: 1, userName: 'Nguyễn Văn A', word: 'Tâm', poem: 'Tâm sáng như gương, hướng thiện đời bình an.' },
-  { id: 2, userName: 'Trần Thị B', word: 'Phúc', poem: 'Phúc sinh phú quý gia đường thịnh.' },
-  { id: 3, userName: 'Lê Văn C', word: 'Tài', poem: 'Tài lộc dồi dào, vạn sự như ý.' },
-];
 
 const parseJwt = (token: string) => {
   try {
@@ -27,6 +22,16 @@ export default function Home() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
+    const fetchRecentCalligraphies = async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const response = await axios.get(`${API_URL}/calligraphy/recent`);
+        setCalligraphies(response.data);
+      } catch (error) {
+        console.error('Lỗi lấy Bảng vàng:', error);
+      }
+    };
+
     const getCookie = (name: string) => {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -38,7 +43,7 @@ export default function Home() {
 
     if (token) {
       setIsLoggedIn(true);
-      setCalligraphies(mockRecentCalligraphies as any);
+      fetchRecentCalligraphies();
 
       const decoded = parseJwt(token);
       if (decoded) setUserInfo(decoded);
@@ -166,16 +171,21 @@ export default function Home() {
                   </h2>
                   <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1 custom-scrollbar">
                     {calligraphies.map((item: any) => (
-                      <div key={item.id} className="bg-red-950/40 p-3 rounded-xl border border-red-800/50 flex items-center gap-3 hover:bg-red-900/60 transition-colors">
+                      <div key={item._id} className="bg-red-950/40 p-3 rounded-xl border border-red-800/50 flex items-center gap-3 hover:bg-red-900/60 transition-colors">
                         <div className="shrink-0 w-12 h-12 bg-linear-to-br from-yellow-400 to-yellow-600 text-red-900 flex items-center justify-center rounded-full text-2xl font-bold font-serif shadow-inner border border-yellow-300">
-                          {item.word}
+                          {item.givenWord}
                         </div>
                         <div className="overflow-hidden">
-                          <p className="font-bold text-sm text-white truncate">{item.userName}</p>
+                          <p className="font-bold text-sm text-white truncate">
+                            {item.user?.fullName || item.userName}
+                          </p>
                           <p className="text-xs text-red-200 line-clamp-2 italic leading-tight">"{item.poem}"</p>
                         </div>
                       </div>
                     ))}
+                    {calligraphies.length === 0 && (
+                      <p className="text-center text-sm text-red-300/60 italic py-4">Chưa có ai xin chữ. Hãy là người đầu tiên!</p>
+                    )}
                   </div>
                 </div>
               </div>

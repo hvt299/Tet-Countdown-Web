@@ -5,7 +5,6 @@ import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import { checkTetState, TetState } from '@/utils/tetHelper';
 import { Fireworks } from '@fireworks-js/react';
-import FallingFlowers from './FallingFlowers';
 
 const TetCountdown = () => {
     const { width, height } = useWindowSize();
@@ -41,33 +40,24 @@ const TetCountdown = () => {
 
     if (!isClient || !tetState) return null;
 
-    // --- TRƯỜNG HỢP 1: ĐANG LÀ TẾT ---
+    // --- TRƯỜNG HỢP 1: ĐANG LÀ TẾT (SAU GIAO THỪA) ---
     if (tetState.isTet) {
         return (
-            <div className="relative z-20 flex flex-col items-center justify-center text-center animate-bounce-slow px-4 h-screen">
+            <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 py-10 w-full">
                 <Fireworks
-                    options={{
-                        opacity: 0.5,
-                        particles: 200,
-                        explosion: 5,
-                        intensity: 30,
-                    }}
-                    style={{
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        position: 'fixed',
-                        zIndex: -1,
-                    }}
+                    options={{ opacity: 0.5, particles: 200, explosion: 5, intensity: 30 }}
+                    style={{ top: 0, left: 0, width: '100%', height: '100%', position: 'fixed', zIndex: 0, pointerEvents: 'none' }}
                 />
 
-                <Confetti width={width} height={height} numberOfPieces={100} gravity={0.15} />
+                <Confetti
+                    width={width} height={height} numberOfPieces={100} gravity={0.15}
+                    style={{ position: 'fixed', top: 0, left: 0, zIndex: 10, pointerEvents: 'none' }}
+                />
 
                 <h1 className="text-4xl md:text-7xl font-black text-yellow-400 drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] mb-6 font-serif uppercase animate-bounce-slow">
                     Chúc Mừng Năm Mới
                 </h1>
-                <div className="bg-red-800/80 px-8 py-4 rounded-full border-2 border-yellow-500 shadow-xl backdrop-blur-sm">
+                <div className="bg-red-800/80 px-8 py-4 rounded-full border-2 border-yellow-500 shadow-xl backdrop-blur-sm relative z-30">
                     <p className="text-2xl md:text-4xl text-white font-bold font-serif">
                         Xuân {tetState.lunarYearName}
                     </p>
@@ -76,11 +66,9 @@ const TetCountdown = () => {
         );
     }
 
-    // --- TRƯỜNG HỢP 2: ĐẾM NGƯỢC ---
+    // --- TRƯỜNG HỢP 2: ĐẾM NGƯỢC (TRƯỚC GIAO THỪA) ---
     return (
         <div className="z-20 flex flex-col items-center px-4 w-full">
-            <FallingFlowers />
-            
             <div className="mb-10 text-center">
                 <h2 className="text-xl md:text-3xl text-white font-medium mb-2 drop-shadow-md tracking-widest uppercase">
                     Sắp đến Tết
@@ -107,9 +95,7 @@ const TetCountdown = () => {
 const TimeBox = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center group">
         <div className="relative w-16 h-20 md:w-32 md:h-36 flex items-center justify-center bg-red-900/90 text-yellow-300 text-3xl md:text-6xl font-bold rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.5)] border border-yellow-500/50 backdrop-blur-md transform transition-transform group-hover:-translate-y-2">
-            {/* Hiệu ứng bóng sáng bên trong */}
             <div className="absolute inset-0 rounded-2xl bg-linear-to-b from-white/10 to-transparent pointer-events-none"></div>
-
             {value < 10 ? `0${value}` : value}
         </div>
         <span className="mt-4 text-xs md:text-lg font-bold text-white uppercase tracking-widest drop-shadow-md bg-red-800/80 px-3 py-1 rounded-md">

@@ -72,9 +72,6 @@ export default function LoginPage() {
             </div>
             <div className="absolute inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90"></div>
 
-            {/* Thêm Component Hoa Rơi của bạn */}
-            <FallingFlowers />
-
             {/* Container Form */}
             <div className="relative z-20 w-full max-w-md p-8 bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-2xl shadow-2xl transition-all duration-300">
 

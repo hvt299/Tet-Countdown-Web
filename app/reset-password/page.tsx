@@ -143,8 +143,6 @@ export default function ResetPasswordPage() {
             </div>
             <div className="absolute inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90"></div>
 
-            <FallingFlowers />
-
             <Suspense fallback={<div className="relative z-20 text-yellow-400 font-bold">Đang tải...</div>}>
                 <ResetPasswordContent />
             </Suspense>
