@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@fireworks-js/react": "^2.10.8",
+    "axios": "^1.13.5",
+    "lucide-react": "^0.564.0",
     "lunar-javascript": "^1.7.7",
     "next": "16.1.6",
     "react": "19.2.3",

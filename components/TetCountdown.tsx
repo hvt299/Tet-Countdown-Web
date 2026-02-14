@@ -7,8 +7,6 @@ import { checkTetState, TetState } from '@/utils/tetHelper';
 import { Fireworks } from '@fireworks-js/react';
 import FallingFlowers from './FallingFlowers';
 
-// Font chữ Google (bạn nhớ import trong layout hoặc globals.css nếu cần, ở đây dùng className mặc định cho tiện)
-
 const TetCountdown = () => {
     const { width, height } = useWindowSize();
     const [tetState, setTetState] = useState<TetState | null>(null);
@@ -99,7 +97,7 @@ const TetCountdown = () => {
                 <TimeBox value={timeLeft.seconds} label="Giây" />
             </div>
 
-            <p className="mt-12 text-white/80 text-lg md:text-xl font-light italic tracking-wider drop-shadow-md bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm">
+            <p className="mt-12 text-white/80 text-lg md:text-xl font-light italic tracking-wider drop-shadow-md bg-black/20 px-6 py-2 rounded-full backdrop-blur-sm text-center">
                 "Đếm từng khoảnh khắc, đón xuân an lành"
             </p>
         </div>

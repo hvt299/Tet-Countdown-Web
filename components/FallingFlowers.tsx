@@ -1,22 +1,20 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-// Link ảnh cánh hoa (Bạn có thể thay bằng ảnh trong folder public của bạn)
-const MAI_BLOSSOM = "/mai-blossom.png"; // Tượng trưng hoa mai
-const DAO_BLOSSOM = "/dao-blossom.png"; // Tượng trưng hoa đào
+const MAI_BLOSSOM = "/mai-blossom.png";
+const DAO_BLOSSOM = "/dao-blossom.png";
 
 const FallingFlowers = () => {
     const [flowers, setFlowers] = useState<any[]>([]);
 
     useEffect(() => {
-        // Tạo 20 cánh hoa ngẫu nhiên
         const newFlowers = Array.from({ length: 20 }).map((_, i) => ({
             id: i,
-            x: Math.random() * 100, // Vị trí ngang ngẫu nhiên (0-100vw)
-            delay: Math.random() * 5, // Độ trễ rơi
-            duration: 5 + Math.random() * 5, // Tốc độ rơi
-            type: Math.random() > 0.5 ? MAI_BLOSSOM : DAO_BLOSSOM, // Trộn lẫn mai và đào
-            size: 20 + Math.random() * 20, // Kích thước ngẫu nhiên
+            x: Math.random() * 100,
+            delay: Math.random() * 5,
+            duration: 5 + Math.random() * 5,
+            type: Math.random() > 0.5 ? MAI_BLOSSOM : DAO_BLOSSOM,
+            size: 20 + Math.random() * 20,
         }));
         setFlowers(newFlowers);
     }, []);

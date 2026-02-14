@@ -1,13 +1,12 @@
 import { Solar, Lunar } from 'lunar-javascript';
 
 export type TetState = {
-    isTet: boolean; // Đang trong Tết
-    targetDate: number; // Timestamp đích
-    currentLunarYear: number; // Năm dương lịch (để tính toán)
-    lunarYearName: string; // Tên năm (Ví dụ: Bính Ngọ)
+    isTet: boolean;
+    targetDate: number;
+    currentLunarYear: number;
+    lunarYearName: string;
 };
 
-// Hàm tính Can Chi (Ví dụ: 2026 -> Bính Ngọ)
 const getCanChi = (year: number): string => {
     const CAN = ['Canh', 'Tân', 'Nhâm', 'Quý', 'Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ'];
     const CHI = ['Thân', 'Dậu', 'Tuất', 'Hợi', 'Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi'];
@@ -33,7 +32,7 @@ export const checkTetState = (): TetState => {
             isTet: true,
             targetDate: 0,
             currentLunarYear: lunarYear,
-            lunarYearName: getCanChi(lunarYear) // Trả về tên năm hiện tại
+            lunarYearName: getCanChi(lunarYear)
         };
     }
 
@@ -57,6 +56,6 @@ export const checkTetState = (): TetState => {
         isTet: false,
         targetDate: targetDate,
         currentLunarYear: targetLunarYear,
-        lunarYearName: getCanChi(targetLunarYear) // Trả về tên năm sắp tới
+        lunarYearName: getCanChi(targetLunarYear)
     };
 };
