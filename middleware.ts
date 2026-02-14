@@ -5,12 +5,16 @@ export function middleware(request: NextRequest) {
     const token = request.cookies.get('access_token')?.value;
     const { pathname } = request.nextUrl;
 
-    const isAuthRoute = pathname.startsWith('/login');
+    const isAuthRoute =
+        pathname.startsWith('/login') ||
+        pathname.startsWith('/forgot-password') ||
+        pathname.startsWith('/reset-password');
 
     const isProtectedRoute =
         pathname.startsWith('/xin-chu') ||
         pathname.startsWith('/hai-loc') ||
-        pathname.startsWith('/tro-choi');
+        pathname.startsWith('/tro-choi') ||
+        pathname.startsWith('/profile');
 
     if (isAuthRoute && token) {
         return NextResponse.redirect(new URL('/', request.url));
@@ -24,5 +28,15 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/', '/login', '/xin-chu', '/hai-loc', '/tro-choi'],
+    matcher: [
+        '/',
+        '/login',
+        '/forgot-password',
+        '/reset-password',
+        '/auth/verify',
+        '/xin-chu',
+        '/hai-loc',
+        '/tro-choi',
+        '/profile'
+    ],
 };

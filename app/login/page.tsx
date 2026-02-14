@@ -6,6 +6,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import FallingFlowers from '@/components/FallingFlowers';
 import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -77,7 +78,7 @@ export default function LoginPage() {
             {/* Container Form */}
             <div className="relative z-20 w-full max-w-md p-8 bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-2xl shadow-2xl transition-all duration-300">
 
-                {/* NÚT BACK (Sử dụng lucide-react) */}
+                {/* NÚT BACK */}
                 <button
                     onClick={() => router.push('/')}
                     className="absolute top-6 left-6 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium focus:outline-none"
@@ -88,6 +89,10 @@ export default function LoginPage() {
                 </button>
 
                 <div className="text-center mt-6 mb-6">
+                    {/* ICON SINH ĐỘNG ĐƯỢC THÊM VÀO ĐÂY */}
+                    <div className="text-5xl mb-4 animate-bounce">
+                        {isLogin ? '🏮' : '🧧'}
+                    </div>
                     <h1 className="text-3xl font-bold text-yellow-400 font-serif mb-2">
                         {isLogin ? 'Đăng Nhập' : 'Khai Bút Đầu Xuân'}
                     </h1>
@@ -116,7 +121,7 @@ export default function LoginPage() {
                                 <input
                                     type="text" name="fullName" required={!isLogin}
                                     className="w-full px-4 py-2.5 text-base rounded-lg bg-red-950/50 border border-red-800 text-white focus:outline-none focus:border-yellow-500"
-                                    placeholder="Nguyễn Văn A" value={formData.fullName} onChange={handleChange}
+                                    placeholder="Ví dụ: Nguyễn Văn A" value={formData.fullName} onChange={handleChange}
                                 />
                             </div>
                             <div>
@@ -132,22 +137,34 @@ export default function LoginPage() {
 
                     <div>
                         <label className="block text-yellow-500 text-sm font-bold mb-1">
-                            {isLogin ? 'Tài khoản hoặc Email' : 'Tên đăng nhập'}
+                            {isLogin ? 'Tên đăng nhập hoặc Email' : 'Tên đăng nhập'}
                         </label>
                         <input
                             type="text" name="username" required
                             className="w-full px-4 py-2.5 text-base rounded-lg bg-red-950/50 border border-red-800 text-white focus:outline-none focus:border-yellow-500"
-                            placeholder={isLogin ? 'Nhập tài khoản...' : 'Ví dụ: nguyenvana'}
+                            placeholder={isLogin ? 'Nhập username hoặc email của bạn' : 'Ví dụ: nguyenvana'}
                             value={formData.username} onChange={handleChange}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-yellow-500 text-sm font-bold mb-1">Mật khẩu</label>
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="block text-yellow-500 text-sm font-bold">Mật khẩu</label>
+                            {isLogin && (
+                                <Link
+                                    href="/forgot-password"
+                                    /* ĐÃ XÓA CLASS UNDERLINE Ở ĐÂY */
+                                    className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors"
+                                >
+                                    Quên mật khẩu?
+                                </Link>
+                            )}
+                        </div>
+
                         <input
                             type="password" name="password" required minLength={!isLogin ? 8 : undefined}
                             className="w-full px-4 py-2.5 text-base rounded-lg bg-red-950/50 border border-red-800 text-white focus:outline-none focus:border-yellow-500"
-                            placeholder={isLogin ? '••••••••' : 'Ít nhất 8 ký tự'}
+                            placeholder={isLogin ? '••••••••' : 'Min 8 ký tự, 1 hoa, 1 số, 1 đặc biệt'}
                             value={formData.password} onChange={handleChange}
                         />
                     </div>
@@ -165,7 +182,8 @@ export default function LoginPage() {
                     <button
                         type="button"
                         onClick={toggleMode}
-                        className="text-yellow-400 hover:text-yellow-300 font-bold underline focus:outline-none text-base"
+                        /* ĐÃ XÓA CLASS UNDERLINE Ở ĐÂY */
+                        className="text-yellow-400 hover:text-yellow-300 font-bold focus:outline-none text-base transition-colors"
                     >
                         {isLogin ? 'Đăng ký ngay' : 'Đăng nhập ngay'}
                     </button>

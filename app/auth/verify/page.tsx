@@ -12,7 +12,7 @@ function VerifyContent() {
     const token = searchParams.get('token');
 
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-    const [message, setMessage] = useState('Ông Đồ đang kiểm tra sổ sách...');
+    const [message, setMessage] = useState('Tết Countdown đang kiểm tra sổ sách...');
 
     useEffect(() => {
         if (!token) {
