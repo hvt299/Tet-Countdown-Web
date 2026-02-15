@@ -71,12 +71,16 @@ export default function ProfilePage() {
 
         const token = getToken();
         try {
-            await axios.patch(`${API_URL}/users/profile`, {
+            const response = await axios.patch(`${API_URL}/users/profile`, {
                 fullName: profileData.fullName,
                 avatar: profileData.avatar,
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+
+            if (response.data.access_token) {
+                document.cookie = `access_token=${response.data.access_token}; path=/; max-age=86400`;
+            }
 
             setProfileMsg({ type: 'success', text: 'Cập nhật thông tin thành công!' });
             setTimeout(() => window.location.reload(), 1000);
@@ -108,8 +112,10 @@ export default function ProfilePage() {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setPasswordMsg({ type: 'success', text: response.data.message || 'Đổi mật khẩu thành công!' });
+            setPasswordMsg({ type: 'success', text: response.data.message || 'Đổi mật khẩu thành công! Đang chuyển hướng đăng nhập...' });
             setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+            document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            setTimeout(() => router.push('/login'), 1500);
         } catch (err: any) {
             const errorMsg = err.response?.data?.message;
             setPasswordMsg({ type: 'error', text: Array.isArray(errorMsg) ? errorMsg[0] : errorMsg || 'Mật khẩu cũ không chính xác!' });

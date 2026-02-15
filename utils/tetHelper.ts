@@ -59,3 +59,22 @@ export const checkTetState = (): TetState => {
         lunarYearName: getCanChi(targetLunarYear)
     };
 };
+
+export const parseJwt = (token: string) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const binaryString = window.atob(base64);
+    const bytes = new Uint8Array(binaryString.length);
+
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const jsonPayload = new TextDecoder('utf-8').decode(bytes);
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('Lỗi giải mã JWT:', e);
+    return null;
+  }
+};

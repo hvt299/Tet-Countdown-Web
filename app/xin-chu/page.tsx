@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
 import { ArrowLeft, PenTool, ScrollText, Sparkles, History } from 'lucide-react';
-import { checkTetState } from '@/utils/tetHelper';
+import { checkTetState, parseJwt } from '@/utils/tetHelper';
 
 export default function XinChuPage() {
     const router = useRouter();
@@ -19,7 +19,6 @@ export default function XinChuPage() {
     const [result, setResult] = useState<any>(null);
     const [isFestivalTime, setIsFestivalTime] = useState(false);
 
-    // Lấy tên mặc định từ token nếu có
     useEffect(() => {
         const currentState = checkTetState();
         const now = new Date().getTime();
@@ -39,13 +38,11 @@ export default function XinChuPage() {
         const token = getCookie('access_token');
         if (token) {
             try {
-                const decoded = JSON.parse(atob(token.split('.')[1]));
+                const decoded = parseJwt(token);
                 if (decoded && decoded.fullName) {
                     setFormData((prev) => ({ ...prev, userName: decoded.fullName }));
                 }
-            } catch (e) {
-                // Ignore
-            }
+            } catch (e) {}
         }
     }, []);
 
@@ -234,7 +231,7 @@ export default function XinChuPage() {
                                 {result.givenWord}
                             </h1>
 
-                            <div className="relative z-10 bg-yellow-500/20 px-4 py-1 rounded border border-yellow-500/50 mb-6">
+                            <div className="relative z-10 bg-yellow-500/20 px-4 py-1 rounded border border-yellow-500/50 mb-6 text-center">
                                 <span className="text-yellow-300 font-bold text-2xl uppercase tracking-widest">{result.vietnameseMeaning}</span>
                             </div>
 

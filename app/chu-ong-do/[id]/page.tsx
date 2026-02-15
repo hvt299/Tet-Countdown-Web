@@ -53,7 +53,7 @@ export default function PublicCalligraphyPage() {
                     <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-yellow-500/50"></div>
 
                     <h1 className="relative z-10 text-[8rem] font-serif text-yellow-400 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.5)] leading-none mb-4">{data.givenWord}</h1>
-                    <div className="relative z-10 bg-yellow-500/20 px-4 py-1 rounded border border-yellow-500/50 mb-6">
+                    <div className="relative z-10 bg-yellow-500/20 px-4 py-1 rounded border border-yellow-500/50 mb-6 text-center">
                         <span className="text-yellow-300 font-bold text-2xl uppercase tracking-widest">{data.vietnameseMeaning}</span>
                     </div>
                     <div className="relative z-10 w-full text-center">

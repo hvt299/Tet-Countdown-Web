@@ -123,7 +123,6 @@ function ResetPasswordContent() {
                 <p className="mt-6 text-center text-sm text-red-200">
                     <Link
                         href="/login"
-                        /* ĐÃ BỎ UNDERLINE, CHUẨN STYLE VỚI TRANG LOGIN */
                         className="text-yellow-400 hover:text-yellow-300 font-bold focus:outline-none text-base transition-colors"
                     >
                         Quay lại Đăng nhập
