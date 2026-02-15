@@ -61,20 +61,34 @@ export const checkTetState = (): TetState => {
 };
 
 export const parseJwt = (token: string) => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const binaryString = window.atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const binaryString = window.atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
 
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        const jsonPayload = new TextDecoder('utf-8').decode(bytes);
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('Lỗi giải mã JWT:', e);
+        return null;
     }
+};
 
-    const jsonPayload = new TextDecoder('utf-8').decode(bytes);
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    console.error('Lỗi giải mã JWT:', e);
-    return null;
-  }
+export const formatCoins = (coins: number) => {
+    if (coins >= 1000000) {
+        const tr = Math.floor(coins / 1000000);
+        const remainder = Math.floor((coins % 1000000) / 100000);
+        return remainder > 0 ? `${tr}Tr${remainder}` : `${tr}Tr`;
+    }
+    if (coins >= 1000) {
+        const k = Math.floor(coins / 1000);
+        const remainder = Math.floor((coins % 1000) / 100);
+        return remainder > 0 ? `${k}K${remainder}` : `${k}K`;
+    }
+    return coins.toString();
 };

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
-import { ArrowLeft, User, KeyRound } from 'lucide-react';
+import { ArrowLeft, User, BadgeCheck, AlertCircle, Coins } from 'lucide-react';
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -14,6 +14,8 @@ export default function ProfilePage() {
         username: '',
         email: '',
         avatar: '',
+        coins: 0,
+        isVerified: false,
     });
 
     const [passwordData, setPasswordData] = useState({
@@ -54,6 +56,8 @@ export default function ProfilePage() {
                     username: user.username || '',
                     email: user.email || '',
                     avatar: user.avatar || '',
+                    coins: user.coins || 0,
+                    isVerified: user.isVerified || false,
                 });
             } catch (error) {
                 console.error('Lỗi khi lấy profile:', error);
@@ -124,8 +128,8 @@ export default function ProfilePage() {
         }
     };
 
-    const inputClass = "w-full px-4 py-2.5 text-base rounded-lg bg-red-950/50 border border-red-800 text-white focus:outline-none focus:border-yellow-500";
-    const disabledInputClass = "w-full px-4 py-2.5 text-base rounded-lg bg-red-950/30 border border-red-900 text-white/50 cursor-not-allowed";
+    const inputClass = "w-full px-4 py-2.5 text-base rounded-lg bg-red-950/50 border border-red-800 text-white focus:outline-none focus:border-yellow-500 transition-colors";
+    const disabledInputClass = "w-full px-4 py-2.5 text-base rounded-lg bg-black/40 border border-red-900/50 text-white/50 cursor-not-allowed";
     const btnClass = "w-full py-3.5 mt-4 text-lg bg-linear-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-red-900 font-bold rounded-lg shadow-lg transform transition-transform hover:scale-[1.02] disabled:opacity-50";
 
     return (
@@ -135,7 +139,6 @@ export default function ProfilePage() {
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
-            {/* Container Chính (Rộng hơn form Login để chia 2 cột) */}
             <div className="relative z-20 w-full max-w-5xl bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-3xl shadow-2xl p-6 md:p-8">
 
                 {/* Header Container */}
@@ -143,7 +146,6 @@ export default function ProfilePage() {
                     <button
                         onClick={() => router.push('/')}
                         className="text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium focus:outline-none"
-                        title="Trở về Trang Chủ"
                     >
                         <ArrowLeft size={18} strokeWidth={2.5} />
                         <span className="hidden sm:inline">Trở về</span>
@@ -155,7 +157,6 @@ export default function ProfilePage() {
                     </h1>
                 </div>
 
-                {/* Chia 2 cột trên Desktop, 1 cột trên Mobile */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
 
                     {/* CỘT 1: THÔNG TIN CÁ NHÂN */}
@@ -166,25 +167,48 @@ export default function ProfilePage() {
                         </div>
 
                         {profileMsg.text && (
-                            <div className={`mb-4 p-3 rounded text-sm text-center ${profileMsg.type === 'error' ? 'bg-red-500/20 border border-red-500 text-red-100' : 'bg-green-500/20 border border-green-500 text-green-100'}`}>
+                            <div className={`mb-4 p-3 rounded-lg text-sm text-center font-medium ${profileMsg.type === 'error' ? 'bg-red-500/20 border border-red-500 text-red-100' : 'bg-green-500/20 border border-green-500 text-green-100'}`}>
                                 {profileMsg.text}
                             </div>
                         )}
 
-                        <form onSubmit={handleUpdateProfile} className="space-y-4">
-                            {/* Avatar Preview */}
-                            <div className="flex flex-col items-center justify-center mb-6">
-                                <div className="w-24 h-24 rounded-full border-2 border-yellow-400 overflow-hidden bg-red-950 flex items-center justify-center mb-3 shadow-lg">
-                                    {profileData.avatar ? (
-                                        <img src={profileData.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                                    ) : (
-                                        <span className="text-4xl text-yellow-500 font-bold uppercase font-serif">
-                                            {profileData.fullName?.charAt(0) || profileData.username?.charAt(0) || 'U'}
+                        {/* THẺ THÀNH VIÊN (User Card) */}
+                        <div className="bg-red-950/40 border border-red-800/50 rounded-2xl p-5 mb-6 flex flex-col sm:flex-row items-center sm:items-start gap-5 shadow-inner">
+                            {/* Avatar */}
+                            <div className="w-20 h-20 shrink-0 rounded-full border-2 border-yellow-400 overflow-hidden bg-red-900 flex items-center justify-center shadow-lg">
+                                {profileData.avatar ? (
+                                    <img src={profileData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                ) : (
+                                    <span className="text-3xl text-yellow-500 font-bold uppercase font-serif">
+                                        {profileData.fullName?.charAt(0) || profileData.username?.charAt(0) || 'U'}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Info */}
+                            <div className="flex flex-col items-center sm:items-start grow text-center sm:text-left">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <h3 className="text-xl font-bold text-white truncate max-w-50">
+                                        {profileData.fullName || profileData.username}
+                                    </h3>
+                                    {profileData.isVerified && (
+                                        <span title="Tài khoản đã xác thực">
+                                            <BadgeCheck className="text-blue-400 w-5 h-5 shrink-0" />
                                         </span>
                                     )}
                                 </div>
-                            </div>
+                                <p className="text-red-200 text-sm mb-3">@{profileData.username}</p>
 
+                                <div className="items-center gap-2 bg-yellow-900/40 border border-yellow-500/30 px-3 py-1.5 rounded-full inline-flex" title={`${profileData.coins.toLocaleString('vi-VN')} Xu`}>
+                                    <Coins className="text-yellow-400 w-4 h-4" />
+                                    <span className="text-yellow-400 font-bold text-sm">
+                                        {profileData.coins} Xu
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleUpdateProfile} className="space-y-4">
                             <div>
                                 <label className="block text-yellow-500 text-sm font-bold mb-1">Họ và Tên</label>
                                 <input
@@ -207,13 +231,20 @@ export default function ProfilePage() {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-yellow-500/70 text-sm font-bold mb-1">Tên đăng nhập</label>
                                     <input type="text" disabled className={disabledInputClass} value={profileData.username} />
                                 </div>
                                 <div>
-                                    <label className="block text-yellow-500/70 text-sm font-bold mb-1">Email</label>
+                                    <label className="flex items-center justify-between text-yellow-500/70 text-sm font-bold mb-1">
+                                        <span>Email</span>
+                                        {!profileData.isVerified && (
+                                            <span className="flex items-center gap-1 text-red-400 text-[10px] uppercase font-bold bg-red-950/50 px-1.5 py-0.5 rounded">
+                                                <AlertCircle size={10} /> Chưa xác minh
+                                            </span>
+                                        )}
+                                    </label>
                                     <input type="email" disabled className={disabledInputClass} value={profileData.email} />
                                 </div>
                             </div>
@@ -232,7 +263,7 @@ export default function ProfilePage() {
                         </div>
 
                         {passwordMsg.text && (
-                            <div className={`mb-4 p-3 rounded text-sm text-center ${passwordMsg.type === 'error' ? 'bg-red-500/20 border border-red-500 text-red-100' : 'bg-green-500/20 border border-green-500 text-green-100'}`}>
+                            <div className={`mb-4 p-3 rounded-lg text-sm text-center font-medium ${passwordMsg.type === 'error' ? 'bg-red-500/20 border border-red-500 text-red-100' : 'bg-green-500/20 border border-green-500 text-green-100'}`}>
                                 {passwordMsg.text}
                             </div>
                         )}

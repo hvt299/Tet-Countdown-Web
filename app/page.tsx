@@ -6,12 +6,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import TetCountdown from '@/components/TetCountdown';
 import { X, Sparkles, LogOut, Settings } from 'lucide-react';
-import { checkTetState, parseJwt } from '@/utils/tetHelper';
+import { checkTetState, parseJwt, formatCoins } from '@/utils/tetHelper';
 
 export default function Home() {
   const [calligraphies, setCalligraphies] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState<any>(null);
+  const [userCoins, setUserCoins] = useState<number>(0);
   const [showPopup, setShowPopup] = useState(false);
   const [isFestivalTime, setIsFestivalTime] = useState(false);
   const [tetMessage, setTetMessage] = useState('');
@@ -62,6 +63,13 @@ export default function Home() {
 
       const decoded = parseJwt(token);
       if (decoded) setUserInfo(decoded);
+
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+      axios.get(`${API_URL}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
+        setUserCoins(res.data.coins || 0);
+      }).catch(err => console.error('Lỗi lấy thông tin xu:', err));
     } else {
       setIsLoggedIn(false);
       const timer = setTimeout(() => setShowPopup(true), 1000);
@@ -97,6 +105,18 @@ export default function Home() {
         {/* USER INFO */}
         {isLoggedIn ? (
           <div className="flex items-center gap-1 md:gap-2 bg-black/40 backdrop-blur-md pl-1 pr-2 py-1 rounded-full border border-yellow-500/30 shadow-lg">
+            {/* Xu */}
+            <div
+              className="flex items-center gap-1 bg-yellow-900/40 px-2 md:px-3 py-1 rounded-full border border-yellow-500/40 ml-1 shrink-0"
+              title={`${userCoins.toLocaleString('vi-VN')} Xu`}
+            >
+              <span className="text-yellow-400 font-bold text-sm md:text-base truncate max-w-12.5 md:max-w-none text-center">
+                {formatCoins(userCoins)}
+              </span>
+              <span className="text-xs md:text-sm shrink-0">🪙</span>
+            </div>
+
+            <div className="h-5 w-px bg-white/20 mx-1 shrink-0"></div>
 
             {/* Nhóm Avatar + Tên + Settings (Bấm vào để qua trang Cài đặt) */}
             <Link
