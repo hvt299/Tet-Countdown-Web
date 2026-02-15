@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Gift, Home, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
-export default function PublicLuckyBudPage() {
+export default function PublicLuckyBudsPage() {
     const params = useParams();
     const id = params?.id as string;
 
