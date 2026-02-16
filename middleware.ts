@@ -42,7 +42,7 @@ export const config = {
         '/hai-loc',
         '/xem-loc/:path*',
         '/lucky-buds-history',
-        '/tro-choi',
+        '/tro-choi/:path*',
         '/profile'
     ],
 };
