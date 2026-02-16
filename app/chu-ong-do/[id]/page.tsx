@@ -36,7 +36,7 @@ export default function PublicCalligraphyPage() {
 
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-x-hidden py-10 px-4">
-            <div className="inset-0 z-0 fixed"><Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority /></div>
+            <div className="inset-0 z-[-2] fixed"><Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority /></div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/60 to-red-900/90 fixed"></div>
 
             <div className="relative z-20 w-full max-w-md animate-in slide-in-from-bottom-10 fade-in duration-700 flex flex-col items-center">

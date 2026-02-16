@@ -66,10 +66,10 @@ export default function LoginPage() {
 
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-hidden py-10">
-            <div className="absolute inset-0 z-0">
+            <div className="inset-0 z-[-2] fixed">
                 <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
-            <div className="absolute inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90"></div>
+            <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
             {/* Container Form */}
             <div className="relative z-20 w-full max-w-md p-8 bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-2xl shadow-2xl transition-all duration-300">

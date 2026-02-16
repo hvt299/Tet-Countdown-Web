@@ -81,10 +81,10 @@ function VerifyContent() {
 export default function VerifyPage() {
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-hidden py-10">
-            <div className="absolute inset-0 z-0">
+            <div className="inset-0 z-[-2] fixed">
                 <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
-            <div className="absolute inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90"></div>
+            <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
             <Suspense fallback={
                 <div className="relative z-20 text-yellow-400 text-xl font-bold">Đang tải...</div>

@@ -130,41 +130,46 @@ export default function BauCuaPage() {
     const hasBets = Object.values(myBets).some(amount => amount > 0);
 
     return (
-        <main className="relative min-h-screen flex flex-col font-sans overflow-hidden bg-red-950">
+        <main className="relative min-h-screen flex flex-col font-sans overflow-x-hidden">
             {/* BACKGROUND */}
-            <div className="inset-0 z-0 fixed">
-                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover opacity-50" priority />
+            <div className="inset-0 z-[-2] fixed">
+                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
+            <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
             {/* HEADER SÒNG BẠC */}
-            <div className="relative z-20 flex items-center justify-between p-2 md:p-4 bg-black/40 backdrop-blur-md border-b border-yellow-500/30">
-                {/* Nút Thoát (Bên trái) */}
-                <button onClick={() => router.push('/tro-choi')} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-3 py-1.5 rounded-full border border-red-800">
-                    <ArrowLeft size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Thoát</span>
-                </button>
+            <div className="fixed top-0 left-0 w-full py-3 px-4 md:px-6 z-50 flex justify-between items-center bg-red-950/30 backdrop-blur-md border-b border-yellow-500/20 shadow-sm transition-all">
 
-                {/* Tiêu đề (Ở giữa) */}
-                <div className="text-center flex-1 px-1 overflow-hidden">
+                {/* 1. BÊN TRÁI (Dùng flex-1 để chiếm 1/3 không gian) */}
+                <div className="flex-1 flex justify-start">
+                    <button onClick={() => router.push('/tro-choi')} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-3 py-1.5 rounded-full border border-red-800">
+                        <ArrowLeft size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Thoát</span>
+                    </button>
+                </div>
+
+                {/* 2. Ở GIỮA (Dùng flex-1 để chiếm 1/3 không gian, ép tiêu đề luôn căn giữa) */}
+                <div className="flex-1 flex flex-col items-center justify-center px-1 overflow-hidden text-center shrink-0">
                     <h1 className="text-sm md:text-xl font-bold text-yellow-400 font-serif tracking-widest uppercase shadow-black drop-shadow-md truncate">
                         Bầu Cua Tôm Cá
                     </h1>
                     <p className="text-[10px] md:text-xs text-red-300 truncate">Phiên: <span className="font-mono text-yellow-500">#{sessionId.slice(-6) || '---'}</span></p>
                 </div>
 
-                {/* Nút Lịch sử & Số Dư (Bên phải) */}
-                <div className="shrink-0 flex items-center gap-2 md:gap-3">
+                {/* 3. BÊN PHẢI (Dùng flex-1 và justify-end để đẩy lệch về mép phải) */}
+                <div className="flex-1 flex justify-end items-center gap-2 md:gap-3">
                     <button onClick={() => router.push('/tro-choi/bau-cua/history')} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-3 py-1.5 rounded-full border border-red-800">
                         <History size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Lịch Sử</span>
                     </button>
 
+                    {/* Khối Tiền (Đã design lại y hệt trang chủ) */}
                     <div
-                        className="flex items-center gap-1 bg-yellow-900/80 px-2 md:px-4 py-1.5 rounded-full border border-yellow-500/40 shadow-inner"
+                        className="flex items-center gap-1 bg-yellow-900/40 px-2 md:px-3 py-1 rounded-full border border-yellow-500/40 shrink-0 shadow-lg"
                         title={`${myCoins.toLocaleString('vi-VN')} Xu`}
                     >
-                        <span className="text-yellow-400 font-bold text-xs md:text-lg text-center max-w-15 md:max-w-none truncate">
+                        <span className="text-yellow-400 font-bold text-sm md:text-base truncate max-w-12.5 md:max-w-none text-center">
                             {formatCoins(myCoins)}
                         </span>
-                        <span className="text-xs md:text-base shrink-0">🪙</span>
+                        <span className="text-xs md:text-sm shrink-0">🪙</span>
                     </div>
                 </div>
             </div>

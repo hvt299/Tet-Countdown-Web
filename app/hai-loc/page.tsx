@@ -8,8 +8,6 @@ export const metadata: Metadata = {
 
 export default function HaiLocPage() {
     return (
-        <main className="min-h-screen bg-red-900">
-            <LuckyTree />
-        </main>
+        <LuckyTree />
     );
 }

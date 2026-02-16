@@ -26,7 +26,7 @@ export default function GamesHubPage() {
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-x-hidden py-10 px-4">
             {/* BACKGROUND CHUNG */}
-            <div className="inset-0 z-0 fixed">
+            <div className="inset-0 z-[-2] fixed">
                 <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
@@ -64,11 +64,13 @@ export default function GamesHubPage() {
 
                     {/* BẦU CUA TÔM CÁ */}
                     <Link href="/tro-choi/bau-cua" className="group block">
-                        <div className={`h-full bg-red-950/60 backdrop-blur-sm border-2 rounded-2xl p-8 flex flex-col items-center text-center shadow-[0_0_15px_rgba(234,179,8,0.1)] transform transition-all duration-300 
-                            ${isBauCuaOpen ? 'border-yellow-500/50 hover:border-yellow-400 hover:-translate-y-2 hover:bg-red-900/80 hover:shadow-[0_0_25px_rgba(234,179,8,0.3)]' : 'border-gray-500/50 opacity-80 grayscale-30 hover:-translate-y-1 hover:bg-black/60'}
+                        <div className={`h-full backdrop-blur-sm border-2 rounded-2xl p-8 flex flex-col items-center text-center transform transition-all duration-300 
+                            ${isBauCuaOpen
+                                ? 'bg-red-900/60 border-yellow-500/50 hover:border-yellow-400 hover:-translate-y-2 hover:bg-red-800/80 shadow-[0_0_15px_rgba(234,179,8,0.2)]'
+                                : 'bg-red-950/80 border-red-800/50 hover:-translate-y-1 hover:bg-red-900/80'}
                         `}>
                             <div className="text-6xl mb-4 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300 drop-shadow-lg">🎲</div>
-                            <h3 className={`text-2xl font-bold font-serif mb-2 ${isBauCuaOpen ? 'text-yellow-400' : 'text-gray-400'}`}>
+                            <h3 className={`text-2xl font-bold font-serif mb-2 ${isBauCuaOpen ? 'text-yellow-400' : 'text-yellow-600'}`}>
                                 Bầu Cua Tôm Cá
                             </h3>
                             <p className="text-sm text-red-200 leading-relaxed">Sòng chơi náo nhiệt, tung xúc xắc và trả thưởng liên tục!</p>
@@ -80,7 +82,7 @@ export default function GamesHubPage() {
                                         Đang mở sòng
                                     </div>
                                 ) : (
-                                    <div className="mt-5 px-4 py-1.5 bg-red-900/50 text-red-400 border border-red-800 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                                    <div className="mt-5 px-4 py-1.5 bg-red-900/80 text-yellow-500/80 border border-red-700 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
                                         <Lock size={12} /> Đã đóng sòng
                                     </div>
                                 )
@@ -90,11 +92,11 @@ export default function GamesHubPage() {
 
                     {/* LÔ TÔ */}
                     <Link href="/tro-choi/lo-to" className="group block">
-                        <div className="h-full bg-black/40 backdrop-blur-sm border-2 border-yellow-500/20 rounded-2xl p-8 flex flex-col items-center text-center shadow-inner transform transition-all duration-300 hover:-translate-y-1 hover:bg-black/60 opacity-80 grayscale-30">
+                        <div className="h-full bg-orange-950/60 backdrop-blur-sm border-2 border-orange-500/30 rounded-2xl p-8 flex flex-col items-center text-center transform transition-all duration-300 hover:-translate-y-1 hover:bg-orange-900/70 hover:border-orange-400/50 shadow-inner">
                             <div className="text-6xl mb-4 group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-300 drop-shadow-lg">🎟️</div>
-                            <h3 className="text-2xl font-bold text-yellow-400/80 font-serif mb-2">Lô Tô Đầu Xuân</h3>
-                            <p className="text-sm text-red-200/80 leading-relaxed">Cùng dò số, kinh báo và rinh siêu lộc khủng về nhà!</p>
-                            <div className="mt-5 px-4 py-1.5 bg-yellow-600/20 text-yellow-500/70 border border-yellow-500/30 rounded-full text-xs font-bold uppercase tracking-wider">
+                            <h3 className="text-2xl font-bold text-yellow-500 font-serif mb-2">Lô Tô Đầu Xuân</h3>
+                            <p className="text-sm text-orange-200/80 leading-relaxed">Cùng dò số, kinh báo và rinh siêu lộc khủng về nhà!</p>
+                            <div className="mt-5 px-4 py-1.5 bg-orange-600/30 text-orange-400 border border-orange-500/40 rounded-full text-xs font-bold uppercase tracking-wider">
                                 Sắp ra mắt
                             </div>
                         </div>

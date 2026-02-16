@@ -40,8 +40,10 @@ export default function BauCuaHistoryPage() {
 
     return (
         <main className="relative min-h-screen flex flex-col font-sans overflow-x-hidden py-10 px-4 md:px-8">
-            <div className="inset-0 z-0 fixed"><Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover opacity-60" priority /></div>
-            <div className="inset-0 z-10 bg-linear-to-b from-red-900/90 via-black/70 to-red-950/90 fixed"></div>
+            <div className="inset-0 z-[-2] fixed">
+                            <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
+                        </div>
+                        <div className="inset-0 z-10 bg-linear-to-b from-red-900/90 via-black/70 to-red-950/90 fixed"></div>
 
             <div className="relative z-20 w-full max-w-5xl mx-auto">
                 {/* HEADER */}

@@ -86,7 +86,7 @@ export default function XinChuPage() {
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-x-hidden py-10 px-4">
             {/* BACKGROUND */}
-            <div className="inset-0 z-0 fixed">
+            <div className="inset-0 z-[-2] fixed">
                 <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
