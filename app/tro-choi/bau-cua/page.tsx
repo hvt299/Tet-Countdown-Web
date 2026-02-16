@@ -37,18 +37,22 @@ export default function BauCuaPage() {
             return;
         }
 
-        const decoded = parseJwt(token);
-        if (decoded) {
-            setUser(decoded);
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+        const fetchMyCoins = () => {
             axios.get(`${API_URL}/users/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
             }).then(res => {
                 setMyCoins(res.data.coins || 0);
             }).catch(err => console.error('Lỗi lấy thông tin xu:', err));
+        };
+
+        const decoded = parseJwt(token);
+        if (decoded) {
+            setUser(decoded);
+            fetchMyCoins();
         }
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
         const socket = io(`${API_URL}/bau-cua`);
         socketRef.current = socket;
 
@@ -61,6 +65,12 @@ export default function BauCuaPage() {
             if (data.sessionId && data.sessionId !== lastSessionId) {
                 setMyBets({ bau: 0, cua: 0, tom: 0, ca: 0, ga: 0, nai: 0 });
                 lastSessionId = data.sessionId;
+            }
+
+            if (data.state === 'RESULT' && data.time === 10) {
+                setTimeout(() => {
+                    fetchMyCoins();
+                }, 1000);
             }
 
             setSessionId(data.sessionId || '');
@@ -95,7 +105,7 @@ export default function BauCuaPage() {
         if (!user || !socketRef.current) return;
 
         socketRef.current.emit('placeBet', {
-            userId: user.userId || (user as any)._id || (user as any).sub,
+            userId: (user as any).sub,
             animal: animal,
             amount: selectedChip
         });
@@ -113,7 +123,7 @@ export default function BauCuaPage() {
         }
 
         socketRef.current.emit('clearBets', {
-            userId: user.userId || (user as any)._id
+            userId: (user as any).sub,
         });
     };
 
