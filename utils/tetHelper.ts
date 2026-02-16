@@ -18,7 +18,9 @@ const getCanChi = (year: number): string => {
 };
 
 export const checkTetState = (): TetState => {
-    const now = new Date();
+    const vnTimeStr = new Date().toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+    const now = new Date(vnTimeStr);
+
     const solar = Solar.fromYmd(now.getFullYear(), now.getMonth() + 1, now.getDate());
     const lunar = solar.getLunar();
 
@@ -26,17 +28,24 @@ export const checkTetState = (): TetState => {
     const lunarDay = lunar.getDay();
     const lunarYear = lunar.getYear();
 
-    // 1. Đang trong Tết (Mùng 1 -> Mùng 10)
+    const currentTetLunar = Lunar.fromYmd(lunarYear, 1, 1);
+    const currentTetSolar = currentTetLunar.getSolar();
+    const currentTetTimestamp = new Date(
+        currentTetSolar.getYear(),
+        currentTetSolar.getMonth() - 1,
+        currentTetSolar.getDay(),
+        0, 0, 0
+    ).getTime();
+
     if (lunarMonth === 1 && lunarDay >= 1 && lunarDay <= 10) {
         return {
             isTet: true,
-            targetDate: 0,
+            targetDate: currentTetTimestamp,
             currentLunarYear: lunarYear,
             lunarYearName: getCanChi(lunarYear)
         };
     }
 
-    // 2. Tính Tết sắp tới
     let targetLunarYear = lunarYear;
     if (lunarMonth > 1 || (lunarMonth === 1 && lunarDay > 10)) {
         targetLunarYear = lunarYear + 1;
