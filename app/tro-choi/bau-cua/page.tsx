@@ -39,22 +39,42 @@ export default function BauCuaPage() {
 
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
-        const fetchMyCoins = () => {
-            axios.get(`${API_URL}/users/profile`, {
-                headers: { Authorization: `Bearer ${token}` }
-            }).then(res => {
-                setMyCoins(res.data.coins || 0);
-            }).catch(err => console.error('Lỗi lấy thông tin xu:', err));
-        };
-
         const decoded = parseJwt(token);
         if (decoded) {
             setUser(decoded);
-            fetchMyCoins();
         }
 
         const socket = io(`${API_URL}/bau-cua`);
         socketRef.current = socket;
+
+        if (decoded) {
+            socket.emit('syncSession', { userId: decoded.sub });
+        }
+
+        socket.on('bauCua:syncData', (data: any) => {
+            setMyBets(data.myBets);
+            const betSum = Object.values(data.myBets).reduce((a: any, b: any) => a + b, 0) as number;
+
+            axios.get(`${API_URL}/users/profile`, {
+                headers: { Authorization: `Bearer ${token}` }
+            }).then(res => {
+                const dbCoins = res.data.coins || 0;
+                if (data.gameState === 'BETTING' || data.gameState === 'SHAKING') {
+                    setMyCoins(dbCoins - betSum);
+                } else {
+                    setMyCoins(dbCoins);
+                }
+            }).catch(err => console.error('Lỗi đồng bộ xu:', err));
+        });
+
+        const fetchMyCoins = () => {
+            if (decoded) {
+                axios.get(`${API_URL}/users/profile`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                }).then(res => setMyCoins(res.data.coins || 0))
+                    .catch(err => console.error('Lỗi lấy thông tin xu:', err));
+            }
+        };
 
         let lastSessionId = '';
 
@@ -62,10 +82,12 @@ export default function BauCuaPage() {
             setGameState(data.state);
             setTimeLeft(data.time);
 
-            if (data.sessionId && data.sessionId !== lastSessionId) {
+            if (lastSessionId && data.sessionId && data.sessionId !== lastSessionId) {
                 setMyBets({ bau: 0, cua: 0, tom: 0, ca: 0, ga: 0, nai: 0 });
-                lastSessionId = data.sessionId;
+                fetchMyCoins();
             }
+
+            lastSessionId = data.sessionId || '';
 
             if (data.state === 'RESULT' && data.time === 10) {
                 setTimeout(() => {
