@@ -206,7 +206,7 @@ export default function Home() {
                       <h2 className="text-xl font-bold text-yellow-400 mb-4 flex items-center justify-center gap-2 font-serif">
                         <span>📜</span> Bảng Vàng Xin Chữ
                       </h2>
-                      <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1 custom-scrollbar">
+                      <div className="space-y-3 max-h-[50vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                         {calligraphies.map((item: any) => (
                           <div key={item._id} className="bg-red-950/40 p-3 rounded-xl border border-red-800/50 flex items-center gap-3 hover:bg-red-900/60 transition-colors">
                             <div className="shrink-0 w-12 h-12 bg-linear-to-br from-yellow-400 to-yellow-600 text-red-900 flex items-center justify-center rounded-full text-2xl font-bold font-serif shadow-inner border border-yellow-300">
