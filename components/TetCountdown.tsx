@@ -11,6 +11,7 @@ const TetCountdown = () => {
     const [tetState, setTetState] = useState<TetState | null>(null);
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     const [isClient, setIsClient] = useState(false);
+    const isMobileDevice = width < 1024;
 
     useEffect(() => {
         setIsClient(true);
@@ -44,13 +45,23 @@ const TetCountdown = () => {
     if (tetState.isTet) {
         return (
             <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 py-10 w-full">
+                {/* Giảm thông số pháo hoa trên Mobile */}
                 <Fireworks
-                    options={{ opacity: 0.5, particles: 200, explosion: 5, intensity: 30 }}
+                    options={{
+                        opacity: 0.5,
+                        particles: isMobileDevice ? 50 : 200,
+                        explosion: isMobileDevice ? 3 : 5,
+                        intensity: isMobileDevice ? 10 : 30
+                    }}
                     style={{ top: 0, left: 0, width: '100%', height: '100%', position: 'fixed', zIndex: 0, pointerEvents: 'none' }}
                 />
 
+                {/* Giảm số lượng giấy rụng (confetti) trên Mobile */}
                 <Confetti
-                    width={width} height={height} numberOfPieces={100} gravity={0.15}
+                    width={width}
+                    height={height}
+                    numberOfPieces={isMobileDevice ? 30 : 100}
+                    gravity={0.15}
                     style={{ position: 'fixed', top: 0, left: 0, zIndex: 10, pointerEvents: 'none' }}
                 />
 
