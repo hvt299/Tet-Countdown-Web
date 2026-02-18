@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
-import { ArrowLeft, History, Ticket } from 'lucide-react';
+import { ArrowLeft, History, Info, Ticket } from 'lucide-react';
 import { parseJwt, formatCoins } from '@/utils/tetHelper';
 import LotoCaller from '@/components/loto/LotoCaller';
 import TicketBoard from '@/components/loto/TicketBoard';
@@ -31,6 +31,7 @@ export default function LotoPage() {
     const [playerCount, setPlayerCount] = useState(0);
     const [waitingKinhCount, setWaitingKinhCount] = useState(0);
     const [winnerModal, setWinnerModal] = useState<{ message: string, jackpot: number } | null>(null);
+    const [showRules, setShowRules] = useState(false);
 
     useEffect(() => {
         const token = document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1];
@@ -153,6 +154,10 @@ export default function LotoPage() {
                     <button onClick={() => router.push('/tro-choi')} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-3 py-1.5 rounded-full border border-red-800">
                         <ArrowLeft size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Thoát</span>
                     </button>
+
+                    <button onClick={() => setShowRules(true)} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-2.5 md:px-3 py-1.5 rounded-full border border-red-800">
+                        <Info size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Luật</span>
+                    </button>
                 </div>
 
                 <div className="flex-1 flex flex-col items-center justify-center px-1 overflow-hidden text-center shrink-0">
@@ -232,7 +237,7 @@ export default function LotoPage() {
 
                     {/* 2. KHU VỰC BÀN VÉ (Chỉ hiện khi có vé và cuộn không viền) */}
                     {myTickets.length > 0 && (
-                        <div className="w-full lg:w-3/5 xl:w-2/3 max-h-[75vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-10">
+                        <div className="w-full lg:w-3/5 xl:w-2/3 max-h-[75vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pb-10 outline-none focus:outline-none">
                             <TicketBoard
                                 myTickets={myTickets}
                                 drawnNumbers={drawnNumbers}
@@ -241,6 +246,27 @@ export default function LotoPage() {
                             />
                         </div>
                     )}
+                </div>
+            )}
+
+            {/* POPUP LUẬT CHƠI LÔ TÔ */}
+            {showRules && (
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                    <div className="bg-red-950 border border-yellow-500/50 rounded-2xl p-6 md:p-8 max-w-md w-full animate-in zoom-in duration-300 shadow-2xl">
+                        <h2 className="text-2xl font-bold text-yellow-400 font-serif mb-4 flex items-center gap-2 border-b border-red-800/50 pb-2">
+                            <Info /> Luật Chơi Lô Tô
+                        </h2>
+                        <ul className="text-red-100 text-sm md:text-base space-y-3 mb-6 list-disc pl-5">
+                            <li>Bạn có <strong className="text-yellow-400">10 phút</strong> để mua vé đầu ván. Mua tối đa <strong className="text-yellow-400">3 vé</strong> với giá 10 xu/vé.</li>
+                            <li>Khi sòng đóng, hệ thống sẽ bốc 1 số ngẫu nhiên sau mỗi <strong className="text-yellow-400">10 giây</strong>.</li>
+                            <li>Tờ vé đủ điều kiện KINH khi có <strong className="text-yellow-400">đúng 5 số trên cùng 1 hàng ngang</strong> khớp với các số đã bốc.</li>
+                            <li>Ai bấm <strong>KINH!</strong> nhanh nhất sẽ ẵm trọn quỹ Jackpot. Nếu không ai Kinh, tiền được cộng dồn sang ván sau!</li>
+                            <li><strong className="text-red-400">Lưu ý:</strong> Bấm Kinh khi chưa đủ 5 số sẽ bị phạt trừ <strong className="text-red-400">100 xu</strong>. Hãy nhìn kỹ vé chớp sáng rồi mới bấm nhé!</li>
+                        </ul>
+                        <button onClick={() => setShowRules(false)} className="w-full bg-yellow-600 hover:bg-yellow-500 text-red-950 font-bold py-2.5 rounded-xl transition-colors">
+                            Đã Hiểu
+                        </button>
+                    </div>
                 </div>
             )}
 

@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Kêu Lô Tô 🎤 | Tết Countdown',
+    title: 'Lô Tô Đầu Xuân 🎤 | Tết Countdown',
     description: 'Tham gia sảnh Lô Tô online, mua vé săn Jackpot siêu khủng đầu năm!',
 };
 

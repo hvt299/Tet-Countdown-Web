@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import axios from 'axios';
 import { io, Socket } from 'socket.io-client';
-import { ArrowLeft, History } from 'lucide-react';
+import { ArrowLeft, History, Info } from 'lucide-react';
 import { parseJwt, formatCoins } from '@/utils/tetHelper';
 import Board from '@/components/bau-cua/Board';
 import BetControls from '@/components/bau-cua/BetControls';
@@ -32,6 +32,7 @@ export default function BauCuaPage() {
 
     const [playerCount, setPlayerCount] = useState(0);
     const [resultModal, setResultModal] = useState<{ profit: number } | null>(null);
+    const [showRules, setShowRules] = useState(false);
 
     useEffect(() => {
         const token = document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1];
@@ -195,6 +196,10 @@ export default function BauCuaPage() {
                     <button onClick={() => router.push('/tro-choi')} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-3 py-1.5 rounded-full border border-red-800">
                         <ArrowLeft size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Thoát</span>
                     </button>
+
+                    <button onClick={() => setShowRules(true)} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-2.5 md:px-3 py-1.5 rounded-full border border-red-800">
+                        <Info size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Luật</span>
+                    </button>
                 </div>
 
                 {/* 2. Ở GIỮA (Dùng flex-1 để chiếm 1/3 không gian, ép tiêu đề luôn căn giữa) */}
@@ -275,6 +280,31 @@ export default function BauCuaPage() {
                             hasBets={hasBets}
                             disabled={gameState !== 'BETTING'}
                         />
+                    </div>
+                </div>
+            )}
+
+            {/* POPUP LUẬT CHƠI BẦU CUA */}
+            {showRules && (
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                    <div className="bg-red-950 border border-yellow-500/50 rounded-2xl p-6 md:p-8 max-w-md w-full animate-in zoom-in duration-300 shadow-2xl">
+                        <h2 className="text-2xl font-bold text-yellow-400 font-serif mb-4 flex items-center gap-2 border-b border-red-800/50 pb-2">
+                            <Info /> Luật Chơi Bầu Cua
+                        </h2>
+                        <ul className="text-red-100 text-sm md:text-base space-y-3 mb-6 list-disc pl-5">
+                            <li>Bạn có <strong className="text-yellow-400">60 giây</strong> để chọn phỉnh xu và đặt cược vào các linh vật.</li>
+                            <li>Được phép <strong className="text-yellow-400">Hủy cược</strong> nhận lại tiền nếu đổi ý, nhưng chỉ áp dụng khi đồng hồ đang đếm ngược.</li>
+                            <li>Hết giờ cược, hệ thống sẽ mất <strong className="text-yellow-400">10 giây để xóc đĩa</strong> và <strong className="text-yellow-400">10 giây để hiển thị kết quả</strong> trả thưởng.</li>
+                            <li>
+                                Tỷ lệ trả thưởng:
+                                <br />- Trúng 1 con: Hoàn vốn cược + Nhận thêm tiền lời <strong className="text-green-400">x1</strong>.
+                                <br />- Trúng 2 con: Hoàn vốn cược + Nhận thêm tiền lời <strong className="text-green-400">x2</strong>.
+                                <br />- Trúng 3 con: Hoàn vốn cược + Nhận thêm tiền lời <strong className="text-green-400">x3</strong>.
+                            </li>
+                        </ul>
+                        <button onClick={() => setShowRules(false)} className="w-full bg-yellow-600 hover:bg-yellow-500 text-red-950 font-bold py-2.5 rounded-xl transition-colors">
+                            Đã Hiểu
+                        </button>
                     </div>
                 </div>
             )}

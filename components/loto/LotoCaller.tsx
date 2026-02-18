@@ -68,7 +68,7 @@ export default function LotoCaller({ gameState, timeLeft, drawnNumbers, jackpot,
                         </div>
 
                         {/* Lịch sử các số vừa gọi */}
-                        <div className="w-full bg-black/40 rounded-xl p-3 border border-red-800 flex flex-nowrap items-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                        <div className="w-full bg-black/40 rounded-xl p-3 border border-red-800 flex flex-nowrap items-center gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] outline-none focus:outline-none">
                             <span className="text-gray-400 text-xs uppercase font-bold shrink-0 mr-2">Vừa ra:</span>
                             {recentNumbers.map((num, idx) => (
                                 <div key={idx} className="shrink-0 w-8 h-8 md:w-10 md:h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-800 shadow-inner border border-gray-400 opacity-80">
