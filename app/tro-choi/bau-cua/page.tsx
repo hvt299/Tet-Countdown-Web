@@ -30,6 +30,9 @@ export default function BauCuaPage() {
     const [myBets, setMyBets] = useState<AnimalBets>({ bau: 0, cua: 0, tom: 0, ca: 0, ga: 0, nai: 0 });
     const [selectedChip, setSelectedChip] = useState(10);
 
+    const [playerCount, setPlayerCount] = useState(0);
+    const [resultModal, setResultModal] = useState<{ profit: number } | null>(null);
+
     useEffect(() => {
         const token = document.cookie.split('; ').find(row => row.startsWith('access_token='))?.split('=')[1];
         if (!token) {
@@ -81,9 +84,11 @@ export default function BauCuaPage() {
         socket.on('bauCua:timeUpdate', (data: any) => {
             setGameState(data.state);
             setTimeLeft(data.time);
+            setPlayerCount(data.playerCount || 0);
 
             if (lastSessionId && data.sessionId && data.sessionId !== lastSessionId) {
                 setMyBets({ bau: 0, cua: 0, tom: 0, ca: 0, ga: 0, nai: 0 });
+                setResultModal(null);
                 fetchMyCoins();
             }
 
@@ -120,6 +125,29 @@ export default function BauCuaPage() {
             socket.disconnect();
         };
     }, [router]);
+
+    useEffect(() => {
+        if (gameState === 'RESULT' && result.length === 3) {
+            const hasPlayed = Object.values(myBets).some(v => v > 0);
+            if (hasPlayed) {
+                let profit = 0;
+                const resultCount: Record<string, number> = { bau: 0, cua: 0, tom: 0, ca: 0, ga: 0, nai: 0 };
+                result.forEach(a => resultCount[a]++);
+
+                for (const animal of Object.keys(myBets)) {
+                    const betAmount = myBets[animal as keyof AnimalBets];
+                    if (betAmount > 0) {
+                        if (resultCount[animal] > 0) {
+                            profit += betAmount * resultCount[animal];
+                        } else {
+                            profit -= betAmount;
+                        }
+                    }
+                }
+                setResultModal({ profit });
+            }
+        }
+    }, [gameState, result]);
 
     const handlePlaceBet = (animal: string) => {
         if (gameState !== 'BETTING') return alert('Đã hết thời gian đặt cược!');
@@ -175,6 +203,7 @@ export default function BauCuaPage() {
                         Bầu Cua Tôm Cá
                     </h1>
                     <p className="text-[10px] md:text-xs text-red-300 truncate">Phiên: <span className="font-mono text-yellow-500">#{sessionId.slice(-6) || '---'}</span></p>
+                    <p className="text-[10px] md:text-xs text-green-400 mt-0.5 font-medium animate-pulse">👥 {playerCount} người đang chơi</p>
                 </div>
 
                 {/* 3. BÊN PHẢI (Dùng flex-1 và justify-end để đẩy lệch về mép phải) */}
@@ -246,6 +275,36 @@ export default function BauCuaPage() {
                             hasBets={hasBets}
                             disabled={gameState !== 'BETTING'}
                         />
+                    </div>
+                </div>
+            )}
+
+            {/* POPUP THÔNG BÁO THẮNG/THUA */}
+            {resultModal && (
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+                    <div className="bg-linear-to-b from-red-900 to-red-950 border-4 border-yellow-500 rounded-3xl p-6 md:p-10 text-center shadow-[0_0_50px_rgba(250,204,21,0.5)] max-w-lg w-full animate-in zoom-in duration-300">
+                        <div className="text-6xl mb-4">
+                            {resultModal.profit > 0 ? '🎉' : resultModal.profit === 0 ? '🤝' : '💸'}
+                        </div>
+                        <h2 className={`text-2xl md:text-4xl font-black mb-2 uppercase drop-shadow-md ${resultModal.profit > 0 ? 'text-yellow-400' : resultModal.profit === 0 ? 'text-gray-300' : 'text-red-400'}`}>
+                            {resultModal.profit > 0 ? 'CHÚC MỪNG!' : resultModal.profit === 0 ? 'HÒA VỐN!' : 'TRẮNG TAY!'}
+                        </h2>
+
+                        <div className="bg-black/50 border-2 border-yellow-600/50 rounded-xl py-4 mt-6 mb-8 shadow-inner">
+                            <p className="text-gray-300 text-sm uppercase font-bold mb-1">
+                                {resultModal.profit >= 0 ? 'Bạn Nhận Được' : 'Bạn Đã Thua'}
+                            </p>
+                            <p className={`text-4xl md:text-5xl font-black ${resultModal.profit >= 0 ? 'text-green-400' : 'text-red-500'}`}>
+                                {resultModal.profit > 0 ? '+' : ''}{formatCoins(resultModal.profit)} <span className="text-3xl filter-none">🪙</span>
+                            </p>
+                        </div>
+
+                        <button
+                            onClick={() => setResultModal(null)}
+                            className="bg-linear-to-r from-yellow-500 to-yellow-600 text-red-950 font-black text-lg px-10 py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg"
+                        >
+                            Chơi Ván Mới
+                        </button>
                     </div>
                 </div>
             )}

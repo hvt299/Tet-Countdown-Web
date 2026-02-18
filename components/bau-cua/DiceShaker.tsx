@@ -40,7 +40,7 @@ export default function DiceShaker({ gameState, timeLeft, result }: DiceShakerPr
                     </div>
                 ) : (
                     <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent rounded-full flex items-center justify-center z-10">
-                        <span className="text-yellow-500/30 font-serif text-xl tracking-widest font-bold">
+                        <span className="text-yellow-400/80 font-serif text-xl tracking-widest font-bold drop-shadow-md">
                             TẾT {new Date().getFullYear()}
                         </span>
                     </div>

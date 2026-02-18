@@ -60,7 +60,7 @@ export default function Board({ gameState, totalBets, myBets, onPlaceBet, result
                             {/* Tổng tiền Server đặt vào ô này */}
                             <div className="mt-1 md:mt-2 w-full bg-black/40 rounded px-2 py-1 text-center border border-black/50">
                                 <span className="text-xs md:text-sm font-mono text-white">
-                                    Tổng: <span className="text-yellow-400 font-bold">{formatCoins(total)}</span>
+                                    Tổng: <span className="text-yellow-400 font-bold">{formatCoins(total)} 🪙</span>
                                 </span>
                             </div>
                         </button>

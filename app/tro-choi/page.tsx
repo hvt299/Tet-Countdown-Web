@@ -11,6 +11,7 @@ export default function GamesHubPage() {
     const router = useRouter();
 
     const [isBauCuaOpen, setIsBauCuaOpen] = useState(false);
+    const [isLotoOpen, setIsLotoOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -18,8 +19,11 @@ export default function GamesHubPage() {
         const solar = Solar.fromYmd(now.getFullYear(), now.getMonth() + 1, now.getDate());
         const lunar = solar.getLunar();
 
-        let isTet = lunar.getMonth() === 1 && lunar.getDay() >= 1 && lunar.getDay() <= 3;
-        setIsBauCuaOpen(isTet);
+        let isTetBauCua = lunar.getMonth() === 1 && lunar.getDay() >= 1 && lunar.getDay() <= 3;
+        let isTetLoto = lunar.getMonth() === 1 && lunar.getDay() >= 4 && lunar.getDay() <= 6;
+
+        setIsBauCuaOpen(isTetBauCua);
+        setIsLotoOpen(isTetLoto);
         setMounted(true);
     }, []);
 
@@ -91,14 +95,30 @@ export default function GamesHubPage() {
                     </Link>
 
                     {/* LÔ TÔ */}
-                    <Link href="/tro-choi/lo-to" className="group block">
-                        <div className="h-full bg-orange-950/60 backdrop-blur-sm border-2 border-orange-500/30 rounded-2xl p-8 flex flex-col items-center text-center transform transition-all duration-300 hover:-translate-y-1 hover:bg-orange-900/70 hover:border-orange-400/50 shadow-inner">
+                    <Link href="/tro-choi/loto" className="group block">
+                        <div className={`h-full backdrop-blur-sm border-2 rounded-2xl p-8 flex flex-col items-center text-center transform transition-all duration-300 
+                            ${isLotoOpen
+                                ? 'bg-orange-900/60 border-yellow-500/50 hover:border-yellow-400 hover:-translate-y-2 hover:bg-orange-800/80 shadow-[0_0_15px_rgba(249,115,22,0.2)]'
+                                : 'bg-orange-950/80 border-orange-800/50 hover:-translate-y-1 hover:bg-orange-900/80'}
+                        `}>
                             <div className="text-6xl mb-4 group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-300 drop-shadow-lg">🎟️</div>
-                            <h3 className="text-2xl font-bold text-yellow-500 font-serif mb-2">Lô Tô Đầu Xuân</h3>
+                            <h3 className={`text-2xl font-bold font-serif mb-2 ${isLotoOpen ? 'text-yellow-400' : 'text-yellow-600'}`}>
+                                Lô Tô Đầu Xuân
+                            </h3>
                             <p className="text-sm text-orange-200/80 leading-relaxed">Cùng dò số, kinh báo và rinh siêu lộc khủng về nhà!</p>
-                            <div className="mt-5 px-4 py-1.5 bg-orange-600/30 text-orange-400 border border-orange-500/40 rounded-full text-xs font-bold uppercase tracking-wider">
-                                Sắp ra mắt
-                            </div>
+
+                            {/* Nút Trạng thái động Lô Tô */}
+                            {mounted && (
+                                isLotoOpen ? (
+                                    <div className="mt-5 px-4 py-1.5 bg-green-600/30 text-green-400 border border-green-500/50 rounded-full text-xs font-bold uppercase tracking-wider animate-pulse">
+                                        Đang mở sòng
+                                    </div>
+                                ) : (
+                                    <div className="mt-5 px-4 py-1.5 bg-orange-900/80 text-orange-400/80 border border-orange-800 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                                        <Lock size={12} /> Đã đóng sòng
+                                    </div>
+                                )
+                            )}
                         </div>
                     </Link>
 
