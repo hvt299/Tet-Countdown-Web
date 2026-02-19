@@ -6,8 +6,8 @@ import Image from 'next/image';
 import axios from 'axios';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
-import { ArrowLeft, History, Gift, Sparkles, Info, ChevronDown, ChevronUp, X } from 'lucide-react';
-import { Solar, Lunar } from 'lunar-javascript';
+import { ArrowLeft, History, Gift, Sparkles, Info, X } from 'lucide-react';
+import { Solar } from 'lunar-javascript';
 
 interface LuckyResult {
     id: string;
@@ -30,7 +30,8 @@ export default function LuckyTree() {
     const [treeImage, setTreeImage] = useState('');
     const [hasPickedToday, setHasPickedToday] = useState(false);
     const [activeBuds, setActiveBuds] = useState<{ top: string, left: string, delay: boolean }[]>([]);
-    const [showRateDetails, setShowRateDetails] = useState(false);
+
+    const currentYear = new Date().getFullYear();
 
     useEffect(() => {
         setTreeImage(Math.random() > 0.5 ? '/mai-tree.png' : '/dao-tree.png');
@@ -71,7 +72,7 @@ export default function LuckyTree() {
             const errorMsg = err.response?.data?.message;
             const finalError = Array.isArray(errorMsg) ? errorMsg[0] : errorMsg || 'Cây Lộc đang bận, xin vui lòng thử lại sau!';
             setError(finalError);
-            
+
             if (finalError.includes('đã hái lộc rồi')) {
                 setHasPickedToday(true);
             }
@@ -113,7 +114,8 @@ export default function LuckyTree() {
             {/* PHÁO GIẤY PHẢI NẰM TRÊN CÙNG */}
             {result && <Confetti width={width} height={height} recycle={false} numberOfPieces={500} className="z-100 fixed top-0 left-0 pointer-events-none" />}
 
-            <div className="relative z-20 w-full max-w-2xl bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-3xl shadow-2xl p-6 md:p-10 transition-all duration-500">
+            {/* Mở rộng max-w-6xl để chứa Layout 2 cột trên PC */}
+            <div className="relative z-20 w-full max-w-6xl bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-3xl shadow-2xl p-6 md:p-8 transition-all duration-500">
 
                 {/* HEADER */}
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-red-800/50">
@@ -131,91 +133,114 @@ export default function LuckyTree() {
                 </div>
 
                 {error && (
-                    <div className="mb-6 p-4 bg-red-900/80 border border-red-500/50 rounded-xl text-yellow-300 text-center shadow-inner font-semibold animate-bounce-in">
+                    <div className="mb-6 p-4 max-w-2xl mx-auto bg-red-900/80 border border-red-500/50 rounded-xl text-yellow-300 text-center shadow-inner font-semibold animate-bounce-in">
                         {error}
                     </div>
                 )}
 
-                {/* MÀN HÌNH KHÓA */}
-                {!isFestivalTime ? (
-                    <div className="mt-8 p-6 bg-red-950/60 border border-yellow-500/30 rounded-2xl text-center shadow-inner">
-                        <div className="text-4xl mb-3 opacity-60">🔒</div>
-                        <h3 className="text-xl font-bold text-yellow-400 mb-2">Chưa đến giờ khai lộc</h3>
-                        <p className="text-red-200 text-sm mb-4 leading-relaxed">
-                            Hội hái lộc chỉ diễn ra vào đúng <strong className="text-yellow-500">3 ngày Tết (Mùng 1, 2, 3)</strong>.<br />
-                            Quý khách vui lòng xem lại <strong className="text-yellow-500">Lịch sử hái lộc</strong> ở góc trên nhé!
-                        </p>
-                        <div className="inline-block px-4 py-2 bg-red-900/50 border border-red-500/30 rounded-lg text-yellow-300 text-xs shadow-inner">
-                            ✨ <strong className="font-bold">Đặc biệt:</strong> Khung giờ Giao Thừa (00:00 - 00:59 Mùng 1) sẽ có tỷ lệ rớt siêu lộc khủng nhất năm!
-                        </div>
-                    </div>
-                ) : (
-                    /* CÂY HOA VÀ LÌ XÌ (Luôn hiển thị khi trong thời gian lễ hội) */
-                    <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500">
-                        <p className="text-red-200 text-center mb-4 italic">
-                            Nhấp vào một bao lì xì trên cây để rước tài lộc về nhà! <br />
-                            <span className="text-xs text-yellow-500/80 not-italic">(Mỗi ngày chỉ được hái 1 lần)</span>
-                        </p>
+                {/* ================= BỐ CỤC 2 CỘT ================= */}
+                <div className="flex flex-col lg:flex-row gap-8 items-start w-full">
 
-                        <div className="relative w-70 h-95 md:w-87.5 md:h-112.5 mb-6">
-                            <Image
-                                src={treeImage}
-                                alt="Cây Hoa Tết"
-                                fill
-                                className={`object-contain transition-opacity duration-300 ${loading ? 'opacity-50 blur-sm' : 'opacity-100'}`}
-                                priority
-                            />
-                            {loading && (
-                                <div className="absolute inset-0 flex items-center justify-center z-20">
-                                    <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                    {/* CỘT TRÁI (Cây Lộc) */}
+                    <div className="w-full lg:w-7/12 flex flex-col items-center">
+                        {!isFestivalTime ? (
+                            <div className="w-full mt-8 p-6 bg-red-950/60 border border-yellow-500/30 rounded-2xl text-center shadow-inner">
+                                <div className="text-4xl mb-3 opacity-60">🔒</div>
+                                <h3 className="text-xl font-bold text-yellow-400 mb-2">Chưa đến giờ khai lộc</h3>
+                                <p className="text-red-200 text-sm mb-4 leading-relaxed">
+                                    Hội hái lộc chỉ diễn ra vào đúng <strong className="text-yellow-500">3 ngày Tết (Mùng 1, 2, 3)</strong>.<br />
+                                    Quý khách vui lòng xem lại <strong className="text-yellow-500">Lịch sử hái lộc</strong> ở góc trên nhé!
+                                </p>
+                                <div className="inline-block px-4 py-2 bg-red-900/50 border border-red-500/30 rounded-lg text-yellow-300 text-xs shadow-inner">
+                                    ✨ <strong className="font-bold">Đặc biệt:</strong> Khung giờ Giao Thừa (00:00 - 00:59 Mùng 1) có tỷ lệ rớt siêu lộc khủng!
                                 </div>
-                            )}
-                            {!loading && !hasPickedToday && activeBuds.map((pos, index) => (
-                                <button
-                                    key={index} onClick={handlePickBud}
-                                    className={`absolute w-10 h-14 md:w-14 md:h-20 transition hover:scale-125 focus:outline-none ${pos.delay ? 'animate-swing-delayed' : 'animate-swing'}`}
-                                    style={{ top: pos.top, left: pos.left }}
-                                >
-                                    <Image src="/lixi.png" alt="Lì xì" fill className="object-contain drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]" />
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* BẢNG TỶ LỆ RỚT LỘC MỞ RỘNG */}
-                        <div className="w-full max-w-sm bg-red-950/40 border border-red-800/50 rounded-xl p-4 text-sm transition-all duration-300">
-                            <div className="flex items-center justify-between mb-3 text-yellow-500 font-bold border-b border-red-800/50 pb-2">
-                                <div className="flex items-center gap-2">
-                                    <Info size={16} />
-                                    <span>Tỷ lệ rớt Xu ({isGiaoThua ? 'Giao Thừa' : 'Ngày Thường'})</span>
-                                </div>
-                                <button onClick={() => setShowRateDetails(!showRateDetails)} className="text-red-300 hover:text-white flex items-center text-xs bg-red-900/50 px-2 py-1 rounded">
-                                    {showRateDetails ? <>Thu gọn <ChevronUp size={14} className="ml-1" /></> : <>Chi tiết <ChevronDown size={14} className="ml-1" /></>}
-                                </button>
                             </div>
+                        ) : (
+                            <div className="flex flex-col items-center animate-in fade-in zoom-in duration-500 w-full">
+                                <p className="text-red-200 text-center mb-4 italic">
+                                    Nhấp vào một bao lì xì trên cây để rước tài lộc về nhà! <br />
+                                    <span className="text-xs text-yellow-500/80 not-italic">(Mỗi ngày chỉ được hái 1 lần)</span>
+                                </p>
 
-                            <div className="grid grid-cols-2 gap-y-2 text-red-200">
-                                <div className="flex justify-between px-2"><span>🌱 Lộc Nhỏ:</span> <strong className="text-white">{isGiaoThua ? '40%' : '50%'}</strong></div>
-                                <div className="flex justify-between px-2"><span>🌿 Lộc Vừa:</span> <strong className="text-white">{isGiaoThua ? '30%' : '30%'}</strong></div>
-                                <div className="flex justify-between px-2"><span>🌳 Lộc Lớn:</span> <strong className="text-white">{isGiaoThua ? '20%' : '15%'}</strong></div>
-                                <div className="flex justify-between px-2"><span>✨ Siêu Lộc:</span> <strong className="text-yellow-400">{isGiaoThua ? '10%' : '5%'}</strong></div>
-                            </div>
-
-                            {showRateDetails && (
-                                <div className="mt-3 pt-3 border-t border-red-800/30 animate-in fade-in slide-in-from-top-2 text-xs text-red-300 space-y-1 bg-black/20 p-2 rounded">
-                                    <p><span className="text-white">🌱 Lộc Nhỏ:</span> 68, 88 Xu</p>
-                                    <p><span className="text-white">🌿 Lộc Vừa:</span> 168, 288 Xu</p>
-                                    <p><span className="text-white">🌳 Lộc Lớn:</span> 888, 999 Xu</p>
-                                    <p><span className="text-yellow-400">✨ Siêu Lộc:</span> 1000, 2026 Xu</p>
+                                <div className="relative w-70 h-95 md:w-87.5 md:h-112.5 mb-6">
+                                    <Image src={treeImage} alt="Cây Hoa Tết" fill className={`object-contain transition-opacity duration-300 ${loading ? 'opacity-50 blur-sm' : 'opacity-100'}`} priority />
+                                    {loading && (
+                                        <div className="absolute inset-0 flex items-center justify-center z-20">
+                                            <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
+                                    )}
+                                    {!loading && !hasPickedToday && activeBuds.map((pos, index) => (
+                                        <button
+                                            key={index} onClick={handlePickBud}
+                                            className={`absolute w-10 h-14 md:w-14 md:h-20 transition hover:scale-125 focus:outline-none ${pos.delay ? 'animate-swing-delayed' : 'animate-swing'}`}
+                                            style={{ top: pos.top, left: pos.left }}
+                                        >
+                                            <Image src="/lixi.png" alt="Lì xì" fill className="object-contain drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]" />
+                                        </button>
+                                    ))}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
-                )}
+
+                    {/* CỘT PHẢI (Bảng Tỷ lệ & Ý nghĩa) */}
+                    <div className="w-full lg:w-5/12 flex flex-col gap-6">
+
+                        {/* --- BẢNG TỶ LỆ RƠI LỘC --- */}
+                        <div className="bg-red-950/60 border border-yellow-500/30 rounded-2xl p-5 shadow-inner">
+                            <h3 className="text-yellow-400 font-bold mb-4 flex items-center gap-2 border-b border-red-800/50 pb-2">
+                                <Gift size={20} /> Tỷ Lệ Rơi Lộc Hiện Tại
+                            </h3>
+
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                {/* Ngày Thường */}
+                                <div className={`flex-1 rounded-xl p-4 transition-all duration-300 border-2 ${!isGiaoThua ? 'bg-green-900/20 border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.3)] scale-100' : 'bg-black/30 border-gray-700 opacity-50 scale-95'}`}>
+                                    <h4 className={`font-bold text-sm uppercase mb-3 ${!isGiaoThua ? 'text-green-400' : 'text-gray-400'}`}>Ngày Thường {!isGiaoThua && '(Đang áp dụng)'}</h4>
+                                    <ul className="text-sm space-y-2 text-red-100">
+                                        <li className="flex justify-between"><span>🌱 Nhỏ (68, 88)</span> <strong className="text-white">50%</strong></li>
+                                        <li className="flex justify-between"><span>🌿 Vừa (168, 288)</span> <strong className="text-white">30%</strong></li>
+                                        <li className="flex justify-between"><span>🌳 Lớn (888, 999)</span> <strong className="text-white">15%</strong></li>
+                                        <li className="flex justify-between"><span>✨ Siêu Lộc</span> <strong className="text-yellow-400">5%</strong></li>
+                                    </ul>
+                                </div>
+
+                                {/* Giao Thừa */}
+                                <div className={`flex-1 rounded-xl p-4 transition-all duration-300 border-2 ${isGiaoThua ? 'bg-yellow-900/30 border-yellow-400 shadow-[0_0_20px_rgba(250,204,21,0.5)] scale-100' : 'bg-black/30 border-gray-700 opacity-50 scale-95'}`}>
+                                    <h4 className={`font-bold text-sm uppercase mb-3 flex items-center gap-2 ${isGiaoThua ? 'text-yellow-400' : 'text-gray-400'}`}>Giao Thừa 🎇 {isGiaoThua && '(Đang áp dụng)'}</h4>
+                                    <ul className="text-sm space-y-2 text-red-100">
+                                        <li className="flex justify-between"><span>🌱 Nhỏ (68, 88)</span> <strong className="text-white">40%</strong></li>
+                                        <li className="flex justify-between"><span>🌿 Vừa (168, 288)</span> <strong className="text-white">30%</strong></li>
+                                        <li className="flex justify-between"><span>🌳 Lớn (888, 999)</span> <strong className="text-white">20%</strong></li>
+                                        <li className="flex justify-between text-yellow-300"><span>✨ Siêu Lộc</span> <strong className="text-yellow-400 animate-pulse">10%</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* --- BẢNG Ý NGHĨA CON SỐ --- */}
+                        <div className="bg-red-950/60 border border-yellow-500/30 rounded-2xl p-5 shadow-inner">
+                            <h3 className="text-yellow-400 font-bold mb-4 flex items-center gap-2 border-b border-red-800/50 pb-2">
+                                <Info size={20} /> Ý Nghĩa Con Số Lộc
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4 text-sm text-red-100">
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">68:</span> <span>Lộc Phát</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">88:</span> <span>Phát Phát</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">168:</span> <span>Mãi Lộc</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">288:</span> <span>Mãi Phát</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">888:</span> <span>Phát Phát Phát</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">999:</span> <span>Vĩnh Cửu trường tồn</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">1000:</span> <span>Khởi đầu rực rỡ</span></div>
+                                <div className="flex gap-2"><span className="w-10 font-bold text-yellow-400 text-right">{currentYear}:</span> <span>Năm mới thăng hoa</span></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
 
             {/* POPUP MODAL KẾT QUẢ TRÚNG LỘC */}
             {result && (
-                <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
                     <div className="animate-in zoom-in-90 fade-in duration-300 w-full max-w-md bg-linear-to-b from-red-600 to-red-800 p-8 rounded-2xl shadow-[0_0_50px_rgba(234,179,8,0.3)] border-4 border-yellow-400 text-center relative overflow-hidden">
 
                         {/* Nút Đóng Modal (Dấu X) */}

@@ -150,7 +150,7 @@ export default function LotoPage() {
 
             {/* HEADER SÒNG BẠC */}
             <div className="fixed top-0 left-0 w-full py-3 px-4 md:px-6 z-50 flex justify-between items-center bg-red-950/30 backdrop-blur-md border-b border-yellow-500/20 shadow-sm transition-all">
-                <div className="flex-1 flex justify-start">
+                <div className="flex-1 flex justify-start items-center gap-2 md:gap-3">
                     <button onClick={() => router.push('/tro-choi')} className="shrink-0 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium bg-red-950/50 px-3 py-1.5 rounded-full border border-red-800">
                         <ArrowLeft size={16} strokeWidth={2.5} /> <span className="hidden sm:inline">Thoát</span>
                     </button>
