@@ -34,7 +34,7 @@ export default function LuckyTree() {
     const currentYear = new Date().getFullYear();
 
     useEffect(() => {
-        setTreeImage(Math.random() > 0.5 ? '/mai-tree.png' : '/dao-tree.png');
+        setTreeImage(Math.random() > 0.5 ? '/images/mai-tree.png' : '/images/dao-tree.png');
 
         const allPositions = [
             { top: '15%', left: '35%', delay: false }, { top: '30%', left: '65%', delay: true },
@@ -107,7 +107,7 @@ export default function LuckyTree() {
         <div className="relative min-h-screen flex items-center justify-center font-sans overflow-x-hidden py-10 px-4">
             {/* BACKGROUND CHUNG */}
             <div className="inset-0 z-[-2] fixed">
-                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
+                <Image src="/images/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
@@ -175,7 +175,7 @@ export default function LuckyTree() {
                                             className={`absolute w-10 h-14 md:w-14 md:h-20 transition hover:scale-125 focus:outline-none ${pos.delay ? 'animate-swing-delayed' : 'animate-swing'}`}
                                             style={{ top: pos.top, left: pos.left }}
                                         >
-                                            <Image src="/lixi.png" alt="Lì xì" fill className="object-contain drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]" />
+                                            <Image src="/images/lixi.png" alt="Lì xì" fill className="object-contain drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]" />
                                         </button>
                                     ))}
                                 </div>

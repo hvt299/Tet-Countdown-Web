@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const MAI_BLOSSOM = "/mai-blossom.png";
-const DAO_BLOSSOM = "/dao-blossom.png";
+const MAI_BLOSSOM = "/images/mai-blossom.png";
+const DAO_BLOSSOM = "/images/dao-blossom.png";
 
 const FallingFlowers = () => {
     const [flowers, setFlowers] = useState<any[]>([]);
