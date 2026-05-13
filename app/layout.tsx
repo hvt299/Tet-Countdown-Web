@@ -11,6 +11,9 @@ const playfair = Playfair_Display({ subsets: ["latin", "vietnamese"], variable: 
 export const metadata: Metadata = {
   title: "Tết Countdown",
   description: "Cùng đếm ngược đến khoảnh khắc giao thừa thiêng liêng",
+  icons: {
+    icon: "/icon.ico",
+  },
 };
 
 export default function RootLayout({
