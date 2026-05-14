@@ -89,7 +89,7 @@ export default function Home() {
 
       {/* BACKGROUND IMAGE & OVERLAY */}
       <div className="inset-0 z-[-2] fixed">
-        <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover object-center" priority />
+        <Image src="/images/bg-tet.png" alt="Tet Background" fill className="object-cover object-center" priority />
       </div>
       <div className="inset-0 z-10 bg-linear-to-b from-red-900/70 via-black/40 to-red-900/80 fixed"></div>
 

@@ -9,6 +9,10 @@
   </p>
 
   <p>
+    🌟 <strong>Hệ sinh thái Lễ hội & SSO:</strong> Dự án này là một phần của <em>Festive Ecosystem</em>, chia sẻ chung hệ thống tài khoản (Single Sign-On - SSO) và cơ sở dữ liệu với dự án Christmas Wishes. Người dùng chỉ cần đăng ký một lần để trải nghiệm xuyên suốt các mùa lễ hội!
+  </p>
+
+  <p>
     <img src="https://img.shields.io/badge/license-UNLICENSED-red" alt="License">
     <img src="https://img.shields.io/badge/status-Active_Development-success" alt="Status">
     <img src="https://img.shields.io/badge/framework-Next.js_16-black?logo=next.js" alt="Next.js">
@@ -34,6 +38,7 @@ Dự án được xây dựng với các công nghệ hiện đại trong hệ s
 | **[Next.js](https://nextjs.org/)** | 16.1.6 | Framework React sử dụng App Router, xử lý Layout & Routing |
 | **[React](https://react.dev/)** | 19.2.3 | Thư viện UI core, xây dựng giao diện Component-based |
 | **[react-dom](https://react.dev/learn/rendering-elements)** | 19.2.3 | Thư viện kết xuất DOM cho React |
+| **[Zustand](https://zustand-demo.pmnd.rs/)** | 5.0.13 | Quản lý Global State (duy trì trạng thái nhạc nền xuyên suốt các trang) |
 
 ---
 
@@ -52,6 +57,7 @@ Dự án được xây dựng với các công nghệ hiện đại trong hệ s
 |------------|------------|------------|
 | **[Socket.io Client](https://socket.io/)** | 4.8.3 | Kết nối WebSockets, đồng bộ trạng thái Game Real-time |
 | **[Axios](https://axios-http.com/)** | 1.13.5 | HTTP Client gọi RESTful API (Lịch sử, Auth, Thông tin User) |
+| **[@react-oauth/google](https://github.com/MomenSherif/react-oauth)** | 0.13.5 | Cung cấp Provider và Hook xử lý luồng đăng nhập Google OAuth2 |
 
 ---
 
@@ -85,6 +91,17 @@ Dự án được xây dựng với các công nghệ hiện đại trong hệ s
     * Xử lý triệt để các lỗi Accessibility (Viền trắng focus outline) trên Chrome/Edge.
     * Ngăn chặn hành vi thao tác sai (Anti-spam clicks) và bảo vệ route bằng Middleware.
 
+* **🔐 Xác thực & Định danh (SSO):**
+    * Tích hợp đăng nhập nhanh bằng Google mượt mà, tiện lợi.
+    * Giao diện form đăng ký/đăng nhập tích hợp hiệu ứng tương tác (hover/active scale) trau chuốt.
+    * Hệ thống tài khoản liên thông hoàn toàn với nền tảng Christmas Wishes.
+
+* **🎵 Quản lý Âm thanh Toàn cục (Global State):**
+    * Tách biệt logic âm thanh sử dụng Zustand, đảm bảo nhạc nền và tiếng pháo hoa được duy trì liền mạch, không bị re-render hay đứt quãng khi chuyển đổi giữa các sảnh game.
+
+* **🚫 Custom Pages (Trang 404 Lễ hội):**
+    * Giao diện Not Found (404) được thiết kế riêng biệt "chuẩn concept" Tết (kết hợp hiệu ứng lấp lánh, hộp quà và văn phong dí dỏm về Ông Đồ/Lô Tô).
+
 ## 📸 Demo Giao diện
 
 ### Sảnh Bầu Cua
@@ -105,7 +122,7 @@ Dự án được xây dựng với các công nghệ hiện đại trong hệ s
 
 Dự án được xây dựng trên **Next.js 16** và **React 19**, yêu cầu môi trường tối thiểu:
 
-* **Node.js:** >= 18.17.0 (Khuyến nghị **v20.x LTS**)  
+* **Node.js:** >= 20.x LTS
 * **Package Manager:** npm >= 9, yarn, pnpm hoặc bun
 
 ### 2️⃣ Clone & Cài đặt Dependencies
@@ -122,6 +139,7 @@ Tạo file `.env` tại thư mục gốc của dự án:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=YourSecretKeyHere
 ```
 
 ### 4️⃣ Lệnh chạy (Scripts)
@@ -144,10 +162,11 @@ http://localhost:3000
 
 ```text
 src/
-├── app/                 # Next.js App Router (Pages & Layouts)
+├── app/                 # Next.js App Router (Pages, Layouts, Middleware)
 ├── components/          # Reusable UI Components
-├── lib/                 # API Calls (Axios Service)
-└── utils/               # Utilities
+├── lib/                 # API Calls (Axios interceptors)
+├── store/               # Zustand Global States (useMusicStore)
+└── utils/               # Utilities (tetHelper)
 ```
 
 ## 🔗 Kết nối Backend
