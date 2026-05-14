@@ -44,7 +44,7 @@ export default function LotoHistoryPage() {
         <main className="relative min-h-screen flex flex-col font-sans overflow-x-hidden py-10 px-4 md:px-8">
             {/* BACKGROUND */}
             <div className="inset-0 z-[-2] fixed">
-                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
+                <Image src="/images/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/90 via-black/70 to-red-950/90 fixed"></div>
 

@@ -144,7 +144,7 @@ export default function LotoPage() {
         <main className="relative min-h-screen flex flex-col font-sans overflow-x-hidden outline-none focus:outline-none">
             {/* BACKGROUND */}
             <div className="inset-0 z-[-2] fixed">
-                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
+                <Image src="/images/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 

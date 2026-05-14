@@ -137,7 +137,7 @@ export default function ResetPasswordPage() {
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-hidden py-10">
             <div className="inset-0 z-[-2] fixed">
-                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
+                <Image src="/images/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 

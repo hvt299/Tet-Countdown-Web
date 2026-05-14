@@ -6,6 +6,7 @@ import Image from 'next/image';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useGoogleLogin } from '@react-oauth/google';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -58,6 +59,36 @@ export default function LoginPage() {
         }
     };
 
+    // Hàm xử lý đăng nhập bằng Google
+    const loginWithGoogle = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            setError('');
+            setSuccessMsg('');
+
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+            try {
+                const response = await axios.post(`${API_URL}/auth/google`, {
+                    token: tokenResponse.access_token
+                });
+
+                const { access_token } = response.data;
+                document.cookie = `access_token=${access_token}; path=/; max-age=86400; secure; samesite=strict`;
+
+                router.push('/');
+                router.refresh();
+            } catch (err: any) {
+                const errorMsg = err.response?.data?.message;
+                setError(Array.isArray(errorMsg) ? errorMsg[0] : errorMsg || 'Xác thực Google thất bại!');
+                setLoading(false);
+            }
+        },
+        onError: () => {
+            setError('Đăng nhập Google bị hủy hoặc gặp lỗi!');
+        }
+    });
+
     const toggleMode = () => {
         setIsLogin(!isLogin);
         setError('');
@@ -67,14 +98,12 @@ export default function LoginPage() {
     return (
         <main className="relative min-h-screen flex items-center justify-center font-sans overflow-hidden py-10">
             <div className="inset-0 z-[-2] fixed">
-                <Image src="/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
+                <Image src="/images/bg-tet.png" alt="Tet Background" fill className="object-cover" priority />
             </div>
             <div className="inset-0 z-10 bg-linear-to-b from-red-900/80 via-black/50 to-red-900/90 fixed"></div>
 
-            {/* Container Form */}
             <div className="relative z-20 w-full max-w-md p-8 bg-black/40 backdrop-blur-md border border-yellow-500/30 rounded-2xl shadow-2xl transition-all duration-300">
 
-                {/* NÚT BACK */}
                 <button
                     onClick={() => router.push('/')}
                     className="absolute top-6 left-6 text-yellow-500 hover:text-yellow-300 flex items-center gap-1 transition-colors text-sm font-medium focus:outline-none"
@@ -85,7 +114,6 @@ export default function LoginPage() {
                 </button>
 
                 <div className="text-center mt-6 mb-6">
-                    {/* ICON SINH ĐỘNG ĐƯỢC THÊM VÀO ĐÂY */}
                     <div className="text-5xl mb-4 animate-bounce">
                         {isLogin ? '🏮' : '🧧'}
                     </div>
@@ -149,7 +177,6 @@ export default function LoginPage() {
                             {isLogin && (
                                 <Link
                                     href="/forgot-password"
-                                    /* ĐÃ XÓA CLASS UNDERLINE Ở ĐÂY */
                                     className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors"
                                 >
                                     Quên mật khẩu?
@@ -173,12 +200,37 @@ export default function LoginPage() {
                     </button>
                 </form>
 
+                {/* --- KHU VỰC NÚT GOOGLE (Hiển thị ở CẢ 2 chế độ Đăng nhập và Đăng ký) --- */}
+                <div className="mt-4">
+                    <div className="relative flex items-center py-2 mb-2">
+                        <div className="grow border-t border-red-800/50"></div>
+                        <span className="shrink-0 px-4 text-xs text-yellow-500/80 uppercase tracking-widest">hoặc</span>
+                        <div className="grow border-t border-red-800/50"></div>
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={() => loginWithGoogle()}
+                        disabled={loading}
+                        className="w-full flex items-center justify-center gap-3 py-3 text-base bg-white hover:bg-gray-100 text-gray-800 font-bold rounded-lg shadow-md disabled:opacity-50 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 focus:ring-offset-black/50"
+                    >
+                        <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                            <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.369 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+                            </g>
+                        </svg>
+                        Đăng nhập bằng Google
+                    </button>
+                </div>
+
                 <p className="mt-6 text-center text-sm text-red-200">
                     {isLogin ? 'Chưa có tài khoản? ' : 'Đã có tài khoản? '}
                     <button
                         type="button"
                         onClick={toggleMode}
-                        /* ĐÃ XÓA CLASS UNDERLINE Ở ĐÂY */
                         className="text-yellow-400 hover:text-yellow-300 font-bold focus:outline-none text-base transition-colors"
                     >
                         {isLogin ? 'Đăng ký ngay' : 'Đăng nhập ngay'}
